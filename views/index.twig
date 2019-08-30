@@ -1,0 +1,17 @@
+{# Layout #}
+{% extends "partials/layout.twig" %}
+
+{# Variables #}
+{# {% set title = 'Home page' %} #}
+
+{# Content #}
+{% block content %}
+  <div class="vc-welcome">
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container text-center">
+        <h1 class="display-4">{{ config.client.name }}</h1>
+        <p class="lead">Skeleton for {{ 'nodejs'|toUpperCase }}.</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

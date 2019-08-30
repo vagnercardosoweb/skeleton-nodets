@@ -1,0 +1,29 @@
+:root {
+  --primary-color: #6272a4;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+}
+
+.vc-welcome {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.vc-welcome .jumbotron {
+  color: #ffffff;
+  background: var(--primary-color);
+  box-shadow: 0px 2px 48px 0px rgba(0, 0, 0, 0.3);
+}
+
+.vc-welcome .display-4 {
+  font-weight: 600 !important;
+}
+
+.vc-welcome .lead {
+  font-size: 1.6rem;
+  margin-bottom: 0;
+}

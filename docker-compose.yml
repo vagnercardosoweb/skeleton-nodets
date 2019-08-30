@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    command: yarn dev
+    working_dir: /home/node/app
+    restart: always
+    networks:
+      - mysql
+      - redis
+    depends_on:
+      - mysql
+    ports:
+      - '3333:3333'
+    volumes:
+      - '.:/home/node/app'
+
+  mysql:
+    image: mysql:5.7
+    command: --sql-mode=""
+    restart: always
+    volumes:
+      - './mysql:/var/lib/mysql'
+    networks:
+      - mysql
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=development
+
+  redis:
+    image: redis:alpine
+    networks:
+      - redis
+    ports:
+      - '6379:6379'
+
+networks:
+  mysql:
+    driver: bridge
+  redis:
+    driver: bridge

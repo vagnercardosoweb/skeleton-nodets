@@ -1,0 +1,13 @@
+.DS_Store
+/**/.idea/
+/**/.env
+/**/node_modules/
+/**/package.lock
+/**/yarn-error.log
+/**/tmp/uploads/*
+!/**/tmp/uploads/.gitkeep
+/**/dist/*
+/**/mysql/*
+!/**/mysql/.gitkeep
+/**/postgree/*
+!/**/postgree/.gitkeep
