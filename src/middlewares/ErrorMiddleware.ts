@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import Youch from 'youch';
 import * as Sentry from '@sentry/node';

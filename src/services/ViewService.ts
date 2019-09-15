@@ -1,5 +1,6 @@
 import twig from 'twig';
 import nunjucks from 'nunjucks';
+// eslint-disable-next-line no-unused-vars
 import { Application } from 'express';
 import config from '../config/view';
 

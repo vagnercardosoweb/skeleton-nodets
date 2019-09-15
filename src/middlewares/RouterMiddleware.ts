@@ -1,5 +1,6 @@
-import Middleware from './Middleware';
+// eslint-disable-next-line no-unused-vars
 import { Request, Response, NextFunction, RequestHandler } from 'express';
+import Middleware from './Middleware';
 
 export default class RouterMiddleware extends Middleware {
   public dispatch(): RequestHandler {
@@ -11,12 +12,19 @@ export default class RouterMiddleware extends Middleware {
         originalMethod: req.originalMethod || null,
         path: req.path,
         originalUrl: req.originalUrl,
-        // cookies: req.cookies,
-        // headers: req.headers,
-        // params: req.params,
-        // query: req.query,
-        // body: req.body,
       };
+
+      // In development
+      if (process.env.NODE_ENV === 'development') {
+        (<any>error) = {
+          ...error,
+          cookies: req.cookies,
+          headers: req.headers,
+          params: req.params,
+          query: req.query,
+          body: req.body,
+        };
+      }
 
       // Method override
       if (

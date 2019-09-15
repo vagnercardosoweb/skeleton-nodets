@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { resolve } from 'path';
 import nodemailer, { Transporter, SendMailOptions } from 'nodemailer';
 import MailNamespace from 'nodemailer/lib/mailer';
@@ -38,6 +39,7 @@ class MailerService {
       return callback();
     }
 
+    // eslint-disable-next-line prefer-const
     let { template, context } = <any>mail.data;
 
     // Prevent duplicate extension .twig

@@ -4,7 +4,7 @@ export default abstract class HttpService {
   protected createRequest(options: RequestOptions): Promise<any> {
     return new Promise((resolve, reject) => {
       const request = https.request(options, function(res) {
-        let chunks: any[] = [];
+        const chunks: any[] = [];
 
         res.on('data', chunk => {
           chunks.push(chunk);

@@ -1,10 +1,10 @@
 module.exports = {
   apps: [
     {
-      name: 'vcwebnetworks-nodejs',
+      name: 'nodets',
       script: './dist/server.js',
 
-      // Options reference: http://pm2.keymetrics.io/docs/usage/application-declaration/
+      // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
       args: '',
       instances: 0,
       exec_mode: 'cluster',

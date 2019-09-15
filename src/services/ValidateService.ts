@@ -1,7 +1,8 @@
+/* eslint-disable no-template-curly-in-string */
 import * as Yup from 'yup';
 import { validateCpf, validateCnpj, onlyNumber } from '../helpers';
 
-Yup.string.prototype.cpf = function(message?: string) {
+Yup.string.prototype.cpf = function cpf(message?: string) {
   message = message || '${path} must be valid cpf.';
 
   return this.test({
@@ -12,7 +13,7 @@ Yup.string.prototype.cpf = function(message?: string) {
   });
 };
 
-Yup.string.prototype.cnpj = function(message?: string) {
+Yup.string.prototype.cnpj = function cnpj(message?: string) {
   message = message || '${path} must be valid cnpj.';
 
   return this.test({
@@ -23,7 +24,7 @@ Yup.string.prototype.cnpj = function(message?: string) {
   });
 };
 
-Yup.string.prototype.phone = function(message?: string) {
+Yup.string.prototype.phone = function phone(message?: string) {
   message = message || '${path} must be a valid phone number dd + number';
 
   return this.transform((value: string | number) =>

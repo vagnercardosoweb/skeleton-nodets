@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import 'dotenv/config';
 import MailerService from '../src/services/MailerService';
 
@@ -10,7 +11,7 @@ describe('Mailer', () => {
         .replyTo('ReplyTo', 'replyto@mail.com')
         .send();
 
-      expect(mailer.messageId).toBeDefined();
+      return expect(mailer.messageId).toBeDefined();
     } catch (error) {
       return fail(error);
     }

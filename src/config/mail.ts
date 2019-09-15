@@ -3,8 +3,8 @@ export default {
   port: process.env.MAIL_PORT,
   secure: false,
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
+    user: process.env.MAIL_USERNAME,
+    pass: process.env.MAIL_PASSWORD,
   },
   options: {
     from: 'Vagner Cardoso <noreply@vcwebnetworks.com.br>',

@@ -1,5 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import jwt, { SignOptions, VerifyOptions } from 'jsonwebtoken';
-import config from '../config/app';
+import configApp from '../config/app';
 
 class JwtService {
   instance() {
@@ -9,7 +10,9 @@ class JwtService {
   encode(payload: any, options?: SignOptions): Promise<string> {
     return new Promise((resolve, reject) => {
       try {
-        resolve(jwt.sign(payload, config.key, options));
+        resolve(
+          jwt.sign(payload, configApp.key, { expiresIn: '7d', ...options })
+        );
       } catch (err) {
         reject(err);
       }
@@ -19,7 +22,7 @@ class JwtService {
   decode(token: string, options?: VerifyOptions): Promise<string | object> {
     return new Promise((resolve, reject) => {
       try {
-        resolve(jwt.verify(token, config.key, options));
+        resolve(jwt.verify(token, configApp.key, options));
       } catch (err) {
         reject(err);
       }

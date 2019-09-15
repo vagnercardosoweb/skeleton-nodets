@@ -1,5 +1,7 @@
+/* eslint-disable no-plusplus */
 import os from 'os';
 import { promises as fs } from 'fs';
+// eslint-disable-next-line no-unused-vars
 import crypto, { HexBase64Latin1Encoding, BinaryLike } from 'crypto';
 import config from './config/app';
 
@@ -25,7 +27,8 @@ export function equalsOrError(a?: any, b?: any, message?: string) {
 
 export function uuid(a?: any): string {
   return a
-    ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
+    ? // eslint-disable-next-line no-bitwise
+      (a ^ ((Math.random() * 16) >> (a / 4))).toString(16)
     : (([1e7] as any) + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, uuid);
 }
 
@@ -55,15 +58,11 @@ export function createHash(
     .digest(encoding);
 }
 
-export function createHashMd5(value?: string): string | boolean {
-  if (typeof value === 'string' && value.length > 0) {
-    return crypto
-      .createHash('md5')
-      .update(String(value))
-      .digest('hex');
-  }
-
-  return false;
+export function createHashMd5(value?: string): string {
+  return crypto
+    .createHash('md5')
+    .update(value)
+    .digest('hex');
 }
 
 export function createRandomBytes(length?: number): Promise<string> {
@@ -95,7 +94,7 @@ export function createDateInstance(date?: Date | string | number) {
 
   if (date instanceof Date) {
     date = date.getTime();
-  } else if (isNaN(Number(date)) && (date as string).trim()) {
+  } else if (Number.isNaN(Number(date)) && (date as string).trim()) {
     const dateSplit = date.toString().split(' ');
     const dateTime = typeof dateSplit[1] !== 'undefined' ? dateSplit[1] : '';
 
@@ -109,7 +108,7 @@ export function createDateInstance(date?: Date | string | number) {
     } else if (dateSplit[0].match(/^\d{4}\/\d{2}\/\d{2}$/gi)) {
       date = `${dateSplit[0]} ${dateTime}`;
     }
-  } else if (!isNaN(Number(date))) {
+  } else if (!Number.isNaN(Number(date))) {
     date = Number(date);
   }
 
@@ -119,11 +118,11 @@ export function createDateInstance(date?: Date | string | number) {
 export function convertToTitleCase(string: string) {
   if (string === null || string === '') {
     return false;
-  } else {
-    string = string.toString();
   }
 
-  return string.replace(/\w\S*/g, function(txt) {
+  string = string.toString();
+
+  return string.replace(/\w\S*/g, function replace(txt) {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
   });
 }
@@ -220,4 +219,9 @@ export function validateCnpj(cnpj: string | number) {
 
 export function onlyNumber(value: any) {
   return String(value).replace(/[^\d]/gi, '');
+}
+
+export function getImageGravatar(email: string, query?: string): string {
+  const md5 = createHashMd5(email);
+  return `https://www.gravatar.com/avatar/${md5}${query}`;
 }

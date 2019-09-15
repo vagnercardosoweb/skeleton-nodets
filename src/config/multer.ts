@@ -9,7 +9,6 @@ export function MulterAutomaticTmpUploads() {
       filename: async (_, file, callback) => {
         try {
           const hash = await createRandomBytes(16);
-
           file.newName = `${hash}${extname(file.originalname)}`;
 
           return callback(null, file.newName);

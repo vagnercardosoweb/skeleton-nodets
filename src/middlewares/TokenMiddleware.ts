@@ -1,5 +1,6 @@
-import Middleware from './Middleware';
+// eslint-disable-next-line no-unused-vars
 import { RequestHandler, Request, Response, NextFunction } from 'express';
+import Middleware from './Middleware';
 import JwtService from '../services/JwtService';
 
 export type TokenMiddlewareParams = { logged: boolean };
@@ -10,8 +11,9 @@ export default class TokenMiddleware extends Middleware {
       const row = {};
       const method = req.method.toLowerCase();
 
-      let decoded: { [key: string]: any } = {};
+      let token;
       let status = 403;
+      let decoded: { [key: string]: any } | string = {};
 
       if (['options'].includes(method)) {
         return next();
@@ -21,49 +23,36 @@ export default class TokenMiddleware extends Middleware {
         const header = req.headers.authorization;
 
         if (!header) {
-          throw new Error('Acesso negado.');
+          token = req.query.token;
+
+          if (!token) {
+            throw new Error('Acesso negado.');
+          }
         }
 
-        const [, token] = header.split(' ');
+        if (!token) {
+          [, token] = header.split(' ');
+        }
 
         try {
-          (decoded as {}) = await JwtService.decode(token.trim());
-        } catch (err) {}
-
-        if (!decoded.id && process.env.API_KEY !== token && logged === false) {
-          throw new Error(
-            'Acesso negado! Não foi possível validar sua requisição.'
-          );
+          decoded = await JwtService.decode(token.trim());
+        } catch (err) {
+          if (process.env.API_KEY !== token) {
+            throw err;
+          }
         }
 
-        // Caso tenha que está logado e não exista o id
+        // Check login
         if (logged === true) {
           status = 401;
-
-          if (!decoded.id) {
-            throw new Error('Acesso não autorizado! Favor realize o login.');
-          }
-
-          // VALIDATE USER LOGIN
-          // TODO
-          // row = {};
-
-          if (!row || row === undefined) {
-            throw new Error(
-              `Acesso não autorizado! Registro #${decoded.id} não encontrado.`
-            );
-          }
-
-          delete decoded.id;
-          delete decoded.iat;
         }
 
         req.auth = {
-          ...decoded,
+          ...(decoded as {}),
           ...row,
         };
 
-        next();
+        return next();
       } catch (err) {
         return res.error(err, status);
       }

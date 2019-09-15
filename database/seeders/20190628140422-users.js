@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const { QueryInterface } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
@@ -8,7 +9,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     const users = [];
 
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 10; i += 1) {
       users.push({
         name: `Name ${i}`,
         email: `email${i}@gmail.com`,

@@ -1,7 +1,8 @@
 import fs from 'fs';
 import { promisify } from 'util';
 import { basename, dirname, extname } from 'path';
-import { Sharp } from 'sharp';
+// eslint-disable-next-line no-unused-vars
+import sharp, { Sharp } from 'sharp';
 
 import { uuid } from '../helpers';
 
@@ -22,20 +23,16 @@ class UploadService {
     path: string,
     name?: string
   ): Promise<MulterFileInterface> {
-    try {
-      if (!file.buffer) {
-        throw new Error('File passed not valid format multer.');
-      }
-
-      this.validateMimeTypes(file.mimetype);
-      await this.validateFile(file, path, name);
-
-      await promisify(fs.writeFile)(`${file.path}/${file.name}`, file.buffer);
-
-      return file;
-    } catch (e) {
-      throw e;
+    if (!file.buffer) {
+      throw new Error('File passed not valid format multer.');
     }
+
+    this.validateMimeTypes(file.mimetype);
+    await this.validateFile(file, path, name);
+
+    await promisify(fs.writeFile)(`${file.path}/${file.name}`, file.buffer);
+
+    return file;
   }
 
   async image(
@@ -46,48 +43,36 @@ class UploadService {
     height?: number,
     format?: string
   ): Promise<MulterFileInterface | boolean> {
-    try {
-      const sharp = require('sharp');
-
-      if (typeof sharp !== 'function') {
-        throw new Error(
-          "Upload image require 'https://github.com/lovell/sharp', install to continue."
-        );
-      }
-
-      if (!file.buffer) {
-        throw new Error('File passed not valid format multer.');
-      }
-
-      if (!file.mimetype.match(/image\//gi)) {
-        return false;
-      }
-
-      this.validateMimeTypes(file.mimetype);
-      await this.validateFile(file, path, name);
-
-      const image: Sharp = sharp(file.buffer);
-      const metadata = await image.metadata();
-
-      width = width || metadata.width;
-      height = height || metadata.height;
-      format = format || metadata.format;
-      format = format === 'jpeg' ? 'jpg' : format;
-
-      await image
-        .resize(width, height, {
-          fit: 'inside',
-          withoutEnlargement: true,
-        })
-        .toFormat(format, {})
-        .toFile(
-          `${file.path}/${file.name.replace(file.extension, `.${format}`)}`
-        );
-
-      return file;
-    } catch (e) {
-      throw e;
+    if (!file.buffer) {
+      throw new Error('File passed not valid format multer.');
     }
+
+    if (!file.mimetype.match(/image\//gi)) {
+      return false;
+    }
+
+    this.validateMimeTypes(file.mimetype);
+    await this.validateFile(file, path, name);
+
+    const image: Sharp = sharp(file.buffer);
+    const metadata = await image.metadata();
+
+    width = width || metadata.width;
+    height = height || metadata.height;
+    format = format || metadata.format;
+    format = format === 'jpeg' ? 'jpg' : format;
+
+    await image
+      .resize(width, height, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .toFormat(format, {})
+      .toFile(
+        `${file.path}/${file.name.replace(file.extension, `.${format}`)}`
+      );
+
+    return file;
   }
 
   mimeTypes(types?: string | Array<string>): UploadService {

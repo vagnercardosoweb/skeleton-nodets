@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const { QueryInterface, DataTypes } = require('sequelize');
 
 module.exports = {
@@ -37,11 +38,7 @@ module.exports = {
           allowNull: false,
         },
       },
-      {
-        engine: 'InnoDB',
-        charset: 'utf8',
-        collate: 'utf8_general_ci',
-      }
+      { engine: 'InnoDB', charset: 'utf8', collate: 'utf8_general_ci' }
     );
   },
 

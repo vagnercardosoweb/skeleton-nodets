@@ -1,7 +1,8 @@
-import { UserSchemaInterface } from './UserSchema';
+/* eslint-disable no-unused-vars */
+
 import { Schema, Document, model, DocumentQuery } from 'mongoose';
 import { UserInterface } from '../interfaces/UserInterface';
-import { createHashMd5 } from '../helpers';
+import { getImageGravatar } from '../helpers';
 
 export interface UserSchemaInterface extends UserInterface, Document {
   getFormattedAddress(): string;
@@ -21,17 +22,15 @@ const UserSchema = new Schema<UserSchemaInterface>(
   }
 );
 
-UserSchema.virtual('image').get(function() {
-  const md5 = createHashMd5(this.email.toLowerCase());
-
-  return `https://www.gravatar.com/avatar/${md5}?s=500`;
+UserSchema.virtual('image').get(function gravatar() {
+  return getImageGravatar(String(this.email).toLowerCase(), '?s=500');
 });
 
-UserSchema.methods.getFormattedAddress = function(): string {
+UserSchema.methods.getFormattedAddress = function formattedAddress(): string {
   return `${this.name} <${this.email}>`;
 };
 
-UserSchema.static('findByEmail', function(
+UserSchema.static('findByEmail', function findByEmail(
   email: string
 ): DocumentQuery<any, any, {}> {
   return this.findOne({ email });

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Dotenv
 import 'dotenv/config';
 
@@ -53,6 +54,7 @@ class App {
 
   private services(): void {
     if (configView.enable) {
+      // eslint-disable-next-line no-new
       new ViewService(this.application);
     }
 
@@ -76,12 +78,12 @@ class App {
       middlewares.unshift(Sentry.Handlers.requestHandler());
     }
 
-    middlewares.map((middleware: any) => {
+    middlewares.forEach((Middleware: any) => {
       try {
-        const handle = new middleware(this.application, this.socketIo);
+        const handle = new Middleware(this.application, this.socketIo);
         this.application.use(handle.dispatch());
       } catch (e) {
-        this.application.use(middleware);
+        this.application.use(Middleware);
       }
     });
   }

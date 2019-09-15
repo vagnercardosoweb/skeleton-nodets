@@ -1,5 +1,6 @@
-import Middleware from './Middleware';
+// eslint-disable-next-line no-unused-vars
 import { Request, Response, NextFunction, RequestHandler } from 'express';
+import Middleware from './Middleware';
 
 export default class MethodOverrideMiddleware extends Middleware {
   public dispatch(): RequestHandler {
@@ -15,8 +16,8 @@ export default class MethodOverrideMiddleware extends Middleware {
 
       // Recover the custom method in the body
       if (req.body && typeof req.body === 'object') {
-        ['_method', '_METHOD'].map(method => {
-          if (Object(req.body).hasOwnProperty(method)) {
+        ['_method', '_METHOD'].forEach(method => {
+          if (typeof req.body[method] !== 'undefined') {
             newMethod = req.body[method];
             delete req.body[method];
           }
@@ -26,7 +27,7 @@ export default class MethodOverrideMiddleware extends Middleware {
       // Recover in header if you have not found
       if (!newMethod) {
         let header: string = 'X-HTTP-Method-Override';
-        (<any>header) = req.headers[header.toLowerCase()];
+        header = <any>req.headers[header.toLowerCase()];
 
         if (!header) {
           return next();
@@ -45,7 +46,7 @@ export default class MethodOverrideMiddleware extends Middleware {
         req.method = newMethod.toUpperCase();
       }
 
-      next();
+      return next();
     };
   }
 }

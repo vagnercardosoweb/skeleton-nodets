@@ -1,8 +1,10 @@
+/* eslint-disable spaced-comment */
+/* eslint-disable no-unused-vars */
 /// <reference types="express" />
 /// <reference types="express-serve-static-core" />
 
 import express from 'express';
-import { Server as SocketServer } from 'socket.io';
+import { Server as SocketServer, Socket as SocketConnected } from 'socket.io';
 
 declare global {
   namespace Express {
@@ -14,6 +16,7 @@ declare global {
     export interface Request {
       auth?: Object;
       socketIo?: SocketServer;
+      socketConnected?: SocketConnected;
       originalMethod?: string;
     }
 

@@ -4,11 +4,12 @@ module.exports = {
   dialect: process.env.DB_DIALECT || 'mysql',
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
-  username: process.env.DB_USER,
+  username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   timezone: process.env.DB_TIMEZONE || 'America/Sao_Paulo',
   encoding: charset,
+  logging: process.env.DB_LOGGING || false,
 
   migrationStorageTableName: 'migrations',
 

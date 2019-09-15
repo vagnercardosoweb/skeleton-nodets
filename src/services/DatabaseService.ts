@@ -7,6 +7,7 @@ import * as models from '../models';
 
 class DatabaseService {
   public sequelize: Sequelize;
+
   public mongo: Mongoose;
 
   connectSequelize() {
@@ -47,13 +48,13 @@ class DatabaseService {
       const { dialect, encoding, timezone } = config;
 
       if (dialect === 'mysql') {
-        connection.query(`SET NAMES \`${encoding}\``);
-        connection.query(`SET time_zone = \`${timezone}\``);
+        await connection.query(`SET NAMES "${encoding}"`);
+        await connection.query(`SET time_zone = "${timezone}"`);
       } else if (dialect === 'pgsql') {
-        connection.query(
-          `SET client_encoding TO \`${encoding.toUpperCase()}\``
+        await connection.query(
+          `SET client_encoding TO "${encoding.toUpperCase()}"`
         );
-        connection.query(`SET timezone TO \`${timezone}\``);
+        await connection.query(`SET timezone TO "${timezone}"`);
       }
     });
   }

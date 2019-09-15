@@ -1,5 +1,6 @@
-import Middleware from './Middleware';
+// eslint-disable-next-line no-unused-vars
 import { Request, Response, NextFunction, RequestHandler } from 'express';
+import Middleware from './Middleware';
 
 export default class AppMiddleware extends Middleware {
   public dispatch(): RequestHandler {
@@ -10,6 +11,7 @@ export default class AppMiddleware extends Middleware {
         'Origin',
         'Content-Type',
         'Authorization',
+        'Cache-Control',
         'X-Requested-With',
         'X-Http-Method-Override',
       ];
@@ -18,11 +20,11 @@ export default class AppMiddleware extends Middleware {
       res.header('Access-Control-Allow-Methods', methods.join(','));
       res.header('Access-Control-Allow-Headers', headers.join(','));
 
-      if (req.method.toUpperCase() === 'OPTIONS') {
+      if (String(req.method).toUpperCase() === 'OPTIONS') {
         return res.sendStatus(200);
       }
 
-      next();
+      return next();
     };
   }
 }

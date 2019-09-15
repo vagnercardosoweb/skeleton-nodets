@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Application, RequestHandler, ErrorRequestHandler } from 'express';
 import { Server as SocketServer } from 'socket.io';
 
