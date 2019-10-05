@@ -217,8 +217,33 @@ export function validateCnpj(cnpj: string | number) {
   return true;
 }
 
-export function onlyNumber(value: any) {
+export function onlyNumber(value: any): string | number {
   return String(value).replace(/[^\d]/gi, '');
+}
+
+export function removeAccents(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f|\u00b4|\u0060|\u005e|\u007e]/g, '');
+}
+
+export function normalizeMoney(value: string): number {
+  return Number(value.replace(/[^0-9-]/g, '')) / 100;
+}
+
+export function formatMoney(value: number): string {
+  const formatter = global.Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  return formatter.format(value);
+}
+
+export function isValidaDate(date: any): boolean {
+  return date instanceof Date && !Number.isNaN(date.getTime());
 }
 
 export function getImageGravatar(email: string, query?: string): string {
