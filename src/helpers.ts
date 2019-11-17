@@ -3,6 +3,7 @@ import os from 'os';
 import { promises as fs } from 'fs';
 // eslint-disable-next-line no-unused-vars
 import crypto, { HexBase64Latin1Encoding, BinaryLike } from 'crypto';
+import { stringify } from 'querystring';
 import config from './config/app';
 
 export function existsOrError(value?: any, message?: string) {
@@ -89,7 +90,14 @@ export function createRandomIntInclusive(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function createDateInstance(date?: Date | string | number) {
+export function isValidaDate(date: any): boolean {
+  return date instanceof Date && !Number.isNaN(date.getTime());
+}
+
+export function createDateInstance(
+  date?: Date | string | number,
+  check: boolean = false
+): Date {
   date = date || Date.now();
 
   if (date instanceof Date) {
@@ -112,12 +120,18 @@ export function createDateInstance(date?: Date | string | number) {
     date = Number(date);
   }
 
-  return new Date(date);
+  const newDate = new Date(date);
+
+  if (check && !isValidaDate(newDate)) {
+    throw new Error(`Invalid date ${date}`);
+  }
+
+  return newDate;
 }
 
-export function convertToTitleCase(string: string) {
-  if (string === null || string === '') {
-    return false;
+export function convertToTitleCase(string: string): string {
+  if (!string) {
+    return '';
   }
 
   string = string.toString();
@@ -127,7 +141,7 @@ export function convertToTitleCase(string: string) {
   });
 }
 
-export function convertToCamelCaseString(value: string) {
+export function convertToCamelCaseString(value: string): string {
   return String(value)
     .toLowerCase()
     .replace(/^([A-Z])|[\s-_](\w)/g, (match, p1, p2) => {
@@ -136,9 +150,9 @@ export function convertToCamelCaseString(value: string) {
     });
 }
 
-export function convertToCamelCaseObject(obj?: any) {
+export function convertToCamelCaseObject(obj?: any): object | boolean {
   if (typeof obj !== 'object') {
-    return obj;
+    return false;
   }
 
   const newObj: { [key: string]: string } = {};
@@ -152,7 +166,7 @@ export function convertToCamelCaseObject(obj?: any) {
   return newObj;
 }
 
-export function validateCpf(cpf: string | number) {
+export function validateCpf(cpf: string | number): boolean {
   cpf = String(cpf).replace(/\.|-|\s/gi, '');
 
   if (cpf.length !== 11) {
@@ -182,7 +196,7 @@ export function validateCpf(cpf: string | number) {
   return true;
 }
 
-export function validateCnpj(cnpj: string | number) {
+export function validateCnpj(cnpj: string | number): boolean {
   cnpj = String(cnpj).replace(/\.|-|\/|\s/gi, '');
 
   if (cnpj.length !== 14) {
@@ -242,11 +256,8 @@ export function formatMoney(value: number): string {
   return formatter.format(value);
 }
 
-export function isValidaDate(date: any): boolean {
-  return date instanceof Date && !Number.isNaN(date.getTime());
-}
-
-export function getImageGravatar(email: string, query?: string): string {
+export function getImageGravatar(email: string, params?: Object): string {
   const md5 = createHashMd5(email);
+  const query = params ? `?${stringify(params)}` : '';
   return `https://www.gravatar.com/avatar/${md5}${query}`;
 }

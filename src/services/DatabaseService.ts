@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import mongoose, { Mongoose } from 'mongoose';
 import { Sequelize } from 'sequelize';
 
@@ -11,25 +12,18 @@ class DatabaseService {
   public mongo: Mongoose;
 
   connectSequelize() {
-    try {
-      this.sequelize = new Sequelize(config);
-      this.afterConnectSequelize();
-      this.loadModelsSequelize();
-    } catch (err) {
-      throw err;
-    }
+    this.sequelize = new Sequelize(config);
+    this.loadModelsSequelize();
   }
 
   async connectMongoose() {
-    try {
-      if (process.env.MONGO_URL) {
-        this.mongo = await mongoose.connect(process.env.MONGO_URL, {
-          useNewUrlParser: true,
-          useFindAndModify: true,
-        });
-      }
-    } catch (err) {
-      throw err;
+    const { MONGO_URL, MONGO_ENABLE } = process.env;
+
+    if (MONGO_URL && String(MONGO_ENABLE) === 'true') {
+      this.mongo = await mongoose.connect(MONGO_URL, {
+        useNewUrlParser: true,
+        useFindAndModify: true,
+      });
     }
   }
 
@@ -41,22 +35,6 @@ class DatabaseService {
           typeof model.associate === 'function' &&
           model.associate(this.sequelize.models)
       );
-  }
-
-  private afterConnectSequelize() {
-    (<any>this.sequelize).afterConnect(async (connection: Sequelize) => {
-      const { dialect, encoding, timezone } = config;
-
-      if (dialect === 'mysql') {
-        await connection.query(`SET NAMES "${encoding}"`);
-        await connection.query(`SET time_zone = "${timezone}"`);
-      } else if (dialect === 'pgsql') {
-        await connection.query(
-          `SET client_encoding TO "${encoding.toUpperCase()}"`
-        );
-        await connection.query(`SET timezone TO "${timezone}"`);
-      }
-    });
   }
 }
 

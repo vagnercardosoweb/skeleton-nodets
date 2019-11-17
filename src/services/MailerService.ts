@@ -6,6 +6,7 @@ import MailMessage from 'nodemailer/lib/mailer/mail-message';
 import Twig from 'twig';
 
 import config from '../config/mail';
+import configApp from '../config/app';
 
 type MailerTypeObject = { [key: string]: any };
 
@@ -44,14 +45,7 @@ class MailerService {
 
     // Prevent duplicate extension .twig
     template = template.replace(/.twig$/gi, '');
-    template = resolve(
-      __dirname,
-      '..',
-      '..',
-      'views',
-      'mail',
-      `${template}.twig`
-    );
+    template = resolve(configApp.path.views, 'mail', `${template}.twig`);
 
     // Compile new html
     Twig.renderFile(template, context, (err, html) => {

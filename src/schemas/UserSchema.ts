@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-
 import { Schema, Document, model, DocumentQuery } from 'mongoose';
 import { UserInterface } from '../interfaces/UserInterface';
 import { getImageGravatar } from '../helpers';
@@ -23,7 +22,7 @@ const UserSchema = new Schema<UserSchemaInterface>(
 );
 
 UserSchema.virtual('image').get(function gravatar() {
-  return getImageGravatar(String(this.email).toLowerCase(), '?s=500');
+  return getImageGravatar(String(this.email).toLowerCase(), { s: 50 });
 });
 
 UserSchema.methods.getFormattedAddress = function formattedAddress(): string {
@@ -41,4 +40,4 @@ UserSchema.static('findByEmail', function findByEmail(
 //   next();
 // });
 
-export default model<UserSchemaInterface>('User', UserSchema);
+export default model<UserSchemaInterface>('UserSchema', UserSchema);

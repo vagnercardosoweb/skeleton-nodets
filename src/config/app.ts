@@ -1,14 +1,17 @@
 import { resolve } from 'path';
 
-const tmp = resolve(__dirname, '..', '..', 'tmp');
+const rootPath = resolve(__dirname, '..', '..');
 
 export default {
   key: process.env.APP_KEY || 'VCWebNetworks',
   apiKey: process.env.API_KEY || 'VCWebNetworks',
 
+  jwtExpiresIn: '7d',
+
   path: {
-    tmp,
-    public: resolve(tmp, '..', 'public'),
-    uploads: resolve(tmp, 'uploads'),
+    tmp: resolve(rootPath, 'tmp'),
+    views: resolve(rootPath, 'views'),
+    public: resolve(rootPath, 'public'),
+    uploads: resolve(rootPath, 'tmp', 'uploads'),
   },
 };

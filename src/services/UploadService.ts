@@ -57,13 +57,17 @@ class UploadService {
     const image: Sharp = sharp(file.buffer);
     const metadata = await image.metadata();
 
-    width = width || metadata.width;
-    height = height || metadata.height;
+    // width = width || metadata.width;
+    // height = height || metadata.height;
+    width = width > metadata.width ? metadata.width : width;
+    height = height > metadata.height ? metadata.height : height;
     format = format || metadata.format;
     format = format === 'jpeg' ? 'jpg' : format;
 
     await image
       .resize(width, height, {
+        width,
+        height,
         fit: 'inside',
         withoutEnlargement: true,
       })

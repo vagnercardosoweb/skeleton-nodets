@@ -17,7 +17,7 @@ Yup.string.prototype.cnpj = function cnpj(message?: string) {
   message = message || '${path} must be valid cnpj.';
 
   return this.test({
-    name: 'cpf',
+    name: 'cnpj',
     message,
     exclusive: true,
     test: validateCnpj,

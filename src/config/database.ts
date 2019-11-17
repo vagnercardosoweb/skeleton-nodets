@@ -7,9 +7,8 @@ module.exports = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  timezone: process.env.DB_TIMEZONE || 'America/Sao_Paulo',
   encoding: charset,
-  logging: process.env.DB_LOGGING || false,
+  timezone: process.env.DB_TIMEZONE || '+00:00',
 
   migrationStorageTableName: 'migrations',
 

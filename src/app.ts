@@ -16,15 +16,17 @@ import HeaderMiddleware from './middlewares/HeaderMiddleware';
 import MethodOverrideMiddleware from './middlewares/MethodOverrideMiddleware';
 import RouterMiddleware from './middlewares/RouterMiddleware';
 import SocketMiddleware from './middlewares/SocketMiddleware';
+// import TokenMiddleware from './middlewares/TokenMiddleware';
 import ErrorMiddleware from './middlewares/ErrorMiddleware';
+import MorganMiddleware from './middlewares/MorganMiddleware';
 
 // Services
 import ViewService from './services/ViewService';
 import DatabaseService from './services/DatabaseService';
 
 // Configs
-import configSentry from './config/sentry';
 import configView from './config/view';
+import configSentry from './config/sentry';
 
 // Routes
 import routes from './routes';
@@ -67,15 +69,16 @@ class App {
       helmet(),
       express.json(),
       express.urlencoded({ extended: true }),
-      AppMiddleware,
+      MorganMiddleware,
       SessionMiddleware,
+      AppMiddleware,
       HeaderMiddleware,
       MethodOverrideMiddleware,
       SocketMiddleware,
     ];
 
     if (configSentry.dsn && process.env.NODE_ENV === 'production') {
-      middlewares.unshift(Sentry.Handlers.requestHandler());
+      middlewares.unshift(Sentry.Handlers.requestHandler({ serverName: true }));
     }
 
     middlewares.forEach((Middleware: any) => {

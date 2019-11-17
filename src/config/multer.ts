@@ -1,11 +1,13 @@
+// eslint-disable-next-line no-unused-vars
 import multer, { Options } from 'multer';
-import { extname, resolve } from 'path';
+import { extname } from 'path';
 import { createRandomBytes } from '../helpers';
+import configApp from './app';
 
 export function MulterAutomaticTmpUploads() {
   return multer({
     storage: multer.diskStorage({
-      destination: resolve(__dirname, '..', '..', 'tmp', 'uploads'),
+      destination: configApp.path.uploads,
       filename: async (_, file, callback) => {
         try {
           const hash = await createRandomBytes(16);

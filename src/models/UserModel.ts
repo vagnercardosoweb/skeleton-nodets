@@ -2,7 +2,7 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 import PasswordService from '../services/PasswordService';
 
-export class UserModel extends Model {
+export default class UserModel extends Model {
   public name!: string;
   public email!: string;
   public readonly password!: string;

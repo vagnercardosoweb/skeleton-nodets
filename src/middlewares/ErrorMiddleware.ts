@@ -31,6 +31,7 @@ export default class AppMiddleware extends Middleware {
       }
 
       return res.error({
+        sentry: res.sentry,
         message: 'Internal Server Error.',
       });
     };

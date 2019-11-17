@@ -28,7 +28,7 @@ export default class AppMiddleware extends Middleware {
         let validators;
 
         if (err instanceof ValidationError && err.inner) {
-          message = 'Falha nas validações.';
+          message = err.errors[Math.floor(Math.random() * err.errors.length)];
           validators = err.inner;
         }
 

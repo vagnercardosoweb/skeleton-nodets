@@ -5,11 +5,12 @@ RUN apt-get update && \
 
 RUN yarn global add pm2
 RUN yarn global add typescript
+RUN yarn global add nodemon
 
 RUN mkdir -p /home/node/app
 RUN chown -R node:node /home/node/app
 
-COPY package.json ./
+COPY package.json .
 RUN yarn
 
 COPY . ./
