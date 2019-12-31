@@ -1,22 +1,16 @@
 // eslint-disable-next-line no-unused-vars
-import { RequestHandler } from 'express';
-import redis from 'redis';
-import ExpressSession from 'express-session';
-import ConnectRedis from 'connect-redis';
-
-import Middleware from './Middleware';
+import connectRedis from 'connect-redis';
+import expressSession from 'express-session';
+import Redis from 'ioredis';
 
 import configRedis from '../config/redis';
 import configSession from '../config/session';
 
-export default class SessionMiddleware extends Middleware {
-  public dispatch(): RequestHandler {
-    const client = redis.createClient(configRedis);
-    const store = new (ConnectRedis(ExpressSession))({ client });
+const client = new Redis(configRedis);
+// @ts-ignore
+const store = new (connectRedis(expressSession))({ client });
 
-    return ExpressSession({
-      store,
-      ...configSession,
-    });
-  }
-}
+export default expressSession({
+  store,
+  ...configSession,
+});

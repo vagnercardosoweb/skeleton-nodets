@@ -1,10 +1,13 @@
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import { IncomingMessage } from 'http';
 import https, { RequestOptions } from 'https';
 
-export default abstract class HttpService {
-  protected createRequest(options: RequestOptions): Promise<any> {
+export default class HttpRequest {
+  static send(options: RequestOptions): Promise<any> {
     return new Promise((resolve, reject) => {
-      const request = https.request(options, function request(res) {
+      const request = https.request(options, function request(
+        res: IncomingMessage
+      ) {
         const chunks: any[] = [];
 
         res.on('data', chunk => {
@@ -13,7 +16,7 @@ export default abstract class HttpService {
 
         res.on('end', () => {
           const chunked = Buffer.concat(chunks);
-          resolve(JSON.parse(chunked.toString()));
+          resolve(chunked.toString());
         });
 
         res.on('error', err => {

@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 
 class IndexController {
-  index(req: Request, res: Response) {
+  index(_: Request, res: Response) {
     return res.render('index');
   }
 }

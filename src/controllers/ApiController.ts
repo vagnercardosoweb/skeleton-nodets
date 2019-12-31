@@ -1,12 +1,17 @@
 // eslint-disable-next-line no-unused-vars
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 class ApiController {
-  index(req: Request, res: Response) {
+  async index(_: any, res: Response) {
     return res.success({
       date: new Date(),
       company: 'VCWeb Networks',
-      developer: 'Vagner dos Santos Cardoso',
+      developer: [
+        {
+          name: 'Vagner dos Santos Cardoso',
+          email: 'dev@vcwebnetworks.com.br',
+        },
+      ],
     });
   }
 }

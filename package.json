@@ -1,7 +1,7 @@
 {
-  "name": "skeleton-nodets",
-  "version": "1.0.0",
-  "description": "Skeleton nodejs + typescript",
+  "name": "@vagnercardoso/skeleton-nodets",
+  "version": "0.0.1",
+  "description": "Skeleton express api + typescript",
   "keywords": [
     "nodejs",
     "express",
@@ -24,25 +24,13 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development nodemon",
-    "start": "yarn build && NODE_ENV=production pm2 startOrRestart ./ecosystem.config.js",
-    "build": "tsc",
-    "test": "NODE_ENV=testing jest"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
-    },
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "tsconfig.json"
-      }
-    },
-    "testMatch": [
-      "**/__tests__/**/*.test.(ts|tsx|js)"
-    ]
+    "start": "yarn build && NODE_ENV=production pm2-docker startOrRestart ./ecosystem.config.js",
+    "prebuild": "rm -rf ./dist && rm tsconfig.tsbuildinfo",
+    "build": "NODE_ENV=production tsc",
+    "test": "NODE_ENV=test jest"
   },
   "dependencies": {
-    "@sentry/node": "^5.9.0",
+    "@sentry/node": "^5.10.2",
     "bcryptjs": "^2.4.3",
     "connect-redis": "^4.0.3",
     "dotenv": "^8.2.0",
@@ -50,56 +38,58 @@
     "express-async-errors": "^3.1.1",
     "express-session": "^1.17.0",
     "helmet": "^3.21.2",
+    "ioredis": "^4.14.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.7.11",
+    "mongoose": "^5.8.3",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
-    "mysql2": "^2.0.0",
-    "nodemailer": "^6.3.1",
+    "mysql2": "^2.1.0",
+    "nodemailer": "^6.4.2",
     "nunjucks": "^3.2.0",
-    "redis": "^2.8.0",
-    "sequelize": "^5.21.2",
-    "sharp": "^0.23.2",
+    "sequelize": "^5.21.3",
+    "sharp": "^0.23.4",
     "socket.io": "^2.3.0",
-    "twig": "^1.14.0",
     "youch": "^2.0.10",
-    "yup": "^0.27.0"
+    "yup": "^0.28.0"
   },
   "devDependencies": {
-    "@types/morgan": "^1.7.37",
     "@types/bcryptjs": "^2.4.2",
     "@types/connect-redis": "^0.0.13",
     "@types/express": "^4.17.2",
-    "@types/express-session": "^1.15.15",
+    "@types/express-session": "^1.15.16",
     "@types/helmet": "^0.0.45",
-    "@types/jest": "^24.0.23",
+    "@types/ioredis": "^4.14.3",
+    "@types/jest": "^24.0.25",
     "@types/jsonwebtoken": "^8.3.5",
-    "@types/mongoose": "^5.5.32",
+    "@types/mongoose": "^5.5.36",
+    "@types/morgan": "^1.7.37",
     "@types/multer": "^1.3.10",
-    "@types/node": "^12.12.8",
-    "@types/nodemailer": "^6.2.2",
+    "@types/node": "^13.1.2",
+    "@types/nodemailer": "^6.4.0",
     "@types/nunjucks": "^3.1.3",
-    "@types/sequelize": "^4.28.6",
-    "@types/sharp": "^0.23.0",
+    "@types/sequelize": "^4.28.8",
+    "@types/sharp": "^0.23.1",
     "@types/socket.io": "^2.1.4",
     "@types/supertest": "^2.0.8",
-    "@types/twig": "^1.12.2",
-    "@types/yup": "^0.26.24",
-    "@typescript-eslint/parser": "^2.7.0",
-    "eslint": "^6.6.0",
+    "@types/yup": "^0.26.27",
+    "@typescript-eslint/parser": "^2.14.0",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-config-prettier": "^6.6.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^10.0.0",
-    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-import-helpers": "^1.0.2",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "jest": "^24.9.0",
-    "nodemon": "^1.19.4",
-    "pm2": "^4.1.2",
+    "nodemailer-stub-transport": "^1.1.0",
+    "nodemon": "^2.0.2",
+    "pm2": "^4.2.1",
     "prettier": "^1.19.1",
     "sequelize-cli": "^5.5.1",
-    "sucrase": "^3.10.1",
+    "sqlite3": "^4.1.1",
+    "sucrase": "^3.11.0",
     "supertest": "^4.0.2",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.7.2"
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.4"
   }
 }

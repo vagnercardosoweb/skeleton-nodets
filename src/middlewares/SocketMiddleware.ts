@@ -1,31 +1,31 @@
-/* eslint-disable no-unused-vars */
+// eslint-disable-next-line no-unused-vars
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import Middleware from './Middleware';
+
+// eslint-disable-next-line no-unused-vars
+import { IApp } from '../app';
 
 let socketId: string;
 const connectedUsers: { [key: string]: boolean } = {};
 
-export default class AppMiddleware extends Middleware {
-  public dispatch(): RequestHandler {
-    this.socketIo.on('connection', socket => {
-      socketId = socket.id;
-      connectedUsers[socket.id] = true;
+export default function SocketMiddleware(app: IApp): RequestHandler {
+  app.socketIo.on('connection', socket => {
+    socketId = socket.id;
+    connectedUsers[socket.id] = true;
 
-      socket.on('disconnect', () => {
-        if (connectedUsers[socket.id]) {
-          delete connectedUsers[socket.id];
-        }
-      });
-
-      this.socketIo.sockets.emit('connectedUsers', connectedUsers);
+    socket.on('disconnect', () => {
+      if (connectedUsers[socket.id]) {
+        delete connectedUsers[socket.id];
+      }
     });
 
-    return (req: Request, res: Response, next: NextFunction) => {
-      req.socketIo = this.socketIo;
-      req.socketId = socketId;
-      req.connectedUsers = connectedUsers;
+    app.socketIo.sockets.emit('connectedUsers', connectedUsers);
+  });
 
-      next();
-    };
-  }
+  return (req: Request, _: Response, next: NextFunction) => {
+    req.socketIo = app.socketIo;
+    req.socketId = socketId;
+    req.connectedUsers = connectedUsers;
+
+    next();
+  };
 }

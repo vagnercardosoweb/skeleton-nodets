@@ -7,8 +7,9 @@ module.exports = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+  storage: process.env.DB_STORAGE,
   encoding: charset,
-  timezone: process.env.DB_TIMEZONE || '+00:00',
+  timezone: process.env.DB_TIMEZONE || '+03:00',
 
   migrationStorageTableName: 'migrations',
 
@@ -21,10 +22,5 @@ module.exports = {
     dialectOptions: {
       collate: 'utf8_general_ci',
     },
-  },
-
-  pool: {
-    min: 0,
-    max: 10,
   },
 };

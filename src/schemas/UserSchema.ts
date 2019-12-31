@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { Schema, Document, model, DocumentQuery } from 'mongoose';
-import { UserInterface } from '../interfaces/UserInterface';
+
 import { getImageGravatar } from '../helpers';
+import { UserInterface } from '../interfaces/UserInterface';
 
 export interface UserSchemaInterface extends UserInterface, Document {
   getFormattedAddress(): string;
