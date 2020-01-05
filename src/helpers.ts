@@ -1,18 +1,20 @@
 /* eslint-disable no-plusplus */
-import os from 'os';
-import { promises as fs } from 'fs';
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
 import crypto, { HexBase64Latin1Encoding, BinaryLike } from 'crypto';
-import { stringify } from 'querystring';
-import config from './config/app';
+import { promises as fs } from 'fs';
+import os from 'os';
+import { stringify, ParsedUrlQueryInput } from 'querystring';
 
-export function existsOrError(value?: any, message?: string) {
+import configView from './config/view';
+import View from './lib/View';
+
+export function existsOrError(value?: any, message?: string): void {
   if (!value) throw new Error(message);
   if (Array.isArray(value) && value.length === 0) throw new Error(message);
   if (typeof value === 'string' && !value.trim()) throw new Error(message);
 }
 
-export function notExistsOrError(value: any, message: string) {
+export function notExistsOrError(value: any, message: string): any {
   try {
     existsOrError(value, message);
   } catch (err) {
@@ -22,7 +24,7 @@ export function notExistsOrError(value: any, message: string) {
   throw new Error(message);
 }
 
-export function equalsOrError(a?: any, b?: any, message?: string) {
+export function equalsOrError(a?: any, b?: any, message?: string): any {
   if (a !== b) throw new Error(message);
 }
 
@@ -49,17 +51,18 @@ export async function createTmpFile(
 }
 
 export function createHash(
-  value?: BinaryLike,
+  value: BinaryLike,
+  key: BinaryLike,
   algorithm = 'sha256',
   encoding: HexBase64Latin1Encoding = 'hex'
 ): string {
   return crypto
-    .createHmac(algorithm, config.key)
+    .createHmac(algorithm, key)
     .update(value)
     .digest(encoding);
 }
 
-export function createHashMd5(value?: string): string {
+export function createHashMd5(value: BinaryLike): string {
   return crypto
     .createHash('md5')
     .update(value)
@@ -96,7 +99,7 @@ export function isValidaDate(date: any): boolean {
 
 export function createDateInstance(
   date?: Date | string | number,
-  check: boolean = false
+  check: boolean = true
 ): Date {
   date = date || Date.now();
 
@@ -144,7 +147,7 @@ export function convertToTitleCase(string: string): string {
 export function convertToCamelCaseString(value: string): string {
   return String(value)
     .toLowerCase()
-    .replace(/^([A-Z])|[\s-_](\w)/g, (match, p1, p2) => {
+    .replace(/^([A-Z])|[\s-_](\w)/g, (_, p1, p2) => {
       if (p2) return p2.toUpperCase();
       return p1.toLowerCase();
     });
@@ -245,7 +248,7 @@ export function normalizeMoney(value: string): number {
   return Number(value.replace(/[^0-9-]/g, '')) / 100;
 }
 
-export function formatMoney(value: number): string {
+export function formatMoneyBrl(value: number): string {
   const formatter = global.Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
@@ -256,8 +259,17 @@ export function formatMoney(value: number): string {
   return formatter.format(value);
 }
 
-export function getImageGravatar(email: string, params?: Object): string {
+export function getImageGravatar(
+  email: string,
+  params?: ParsedUrlQueryInput
+): string {
   const md5 = createHashMd5(email);
   const query = params ? `?${stringify(params)}` : '';
   return `https://www.gravatar.com/avatar/${md5}${query}`;
+}
+
+export function renderView(template: string, context: object): string {
+  const nunjucks = View.nunjucks(configView.path, configView.nujunks);
+
+  return nunjucks.render(`${template}.njk`, context || {});
 }

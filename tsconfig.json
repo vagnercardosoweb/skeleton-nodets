@@ -1,19 +1,25 @@
 {
   "compilerOptions": {
+    "target": "es2016",
     "module": "commonjs",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "removeComments": true,
-    "preserveConstEnums": true,
-    "target": "esnext",
-    "noImplicitAny": true,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "sourceMap": false,
-    "outDir": "dist",
+    "removeComments": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true,
+    // "composite": true,
+    // "declaration": false,
+    // "declarationDir": "./dist/types",
+    "types": ["node", "jest"],
     "typeRoots": ["node_modules/@types", "src/types"],
-    "paths": {
-      "*": ["node_modules/*", "src/types/*"]
-    }
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.test.ts"]

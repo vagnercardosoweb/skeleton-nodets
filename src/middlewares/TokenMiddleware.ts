@@ -1,63 +1,48 @@
 // eslint-disable-next-line no-unused-vars
-import { RequestHandler, Request, Response, NextFunction } from 'express';
-import Middleware from './Middleware';
-import JwtService from '../services/JwtService';
+import { Request, Response, NextFunction } from 'express';
 
-export type TokenMiddlewareParams = { logged: boolean };
+import configApp from '../config/app';
+import { Jwt } from '../lib';
 
-export default class TokenMiddleware extends Middleware {
-  public dispatch({ logged }: TokenMiddlewareParams): RequestHandler {
-    return async (req: Request, res: Response, next: NextFunction) => {
-      let token;
-      let status = 403;
-      const decoded: { [key: string]: any } = {};
+export default async (req: Request, res: Response, next: NextFunction) => {
+  let status = 403;
+  const decoded: { [key: string]: any } = {};
+  const allowed: Array<string> = [];
+  const method = req.method.toLowerCase();
 
-      const allowed: Array<string> = [];
-      const method = req.method.toLowerCase();
-
-      if (['options'].includes(method)) {
-        return next();
-      }
-
-      if (allowed.includes(req.path)) {
-        req.allowedRoute = true;
-        return next();
-      }
-
-      try {
-        const { authorization } = req.headers;
-
-        if (!authorization) {
-          token = req.query.token;
-
-          if (!token) {
-            throw new Error('Acesso negado.');
-          }
-        }
-
-        if (!token) {
-          [, token] = authorization.split(' ');
-        }
-
-        try {
-          (decoded as {}) = await JwtService.decode(token.trim());
-        } catch (err) {
-          if (process.env.API_KEY !== token) {
-            throw err;
-          }
-        }
-
-        // Verifica id no token
-        if (!decoded.id && logged) {
-          status = 401;
-        }
-
-        req.user = { ...decoded };
-
-        return next();
-      } catch (err) {
-        return res.error(err, status);
-      }
-    };
+  if (['options'].includes(method)) {
+    return next();
   }
-}
+
+  if (allowed.includes(req.path)) {
+    req.allowedRoute = true;
+    return next();
+  }
+
+  try {
+    let [, token] = (req.headers.authorization as string).split(' ');
+
+    if (!token) {
+      token = req.query.token;
+
+      if (!token) {
+        throw new Error('Invalid token.');
+      }
+    }
+
+    try {
+      (decoded as {}) = await Jwt.decode(token.trim(), configApp.key);
+    } catch (err) {
+      if (process.env.API_KEY !== token) {
+        status = 401;
+        throw err;
+      }
+    }
+
+    // req.user = { ...decoded };
+
+    return next();
+  } catch (err) {
+    return res.error(err, status);
+  }
+};

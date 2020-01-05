@@ -1,23 +1,37 @@
-FROM node
+FROM node:12.14-alpine
 
-RUN apt-get update && \
-  apt-get upgrade -y
+# set environment
+ENV USER=node 
+ENV WORKDIR=/home/node/app
 
-RUN yarn global add pm2
-RUN yarn global add typescript
-RUN yarn global add nodemon
+# set workdir application
+WORKDIR ${WORKDIR}
 
-RUN mkdir -p /home/node/app
-RUN chown -R node:node /home/node/app
+# create directory app and permission
+RUN mkdir -p ${WORKDIR}
+RUN chown -R ${USER}:${USER} ${WORKDIR}
 
+# install global yarn dependencies
+# RUN yarn global add pm2 typescript nodemon
+
+# copy package.json
 COPY package.json .
-RUN yarn
+COPY yarn.lock .
 
-COPY . ./
-COPY --chown=node:node . ./
+# update system and install dependencies
+RUN apk add --update alpine-sdk python vips-tools vips-dev fftw-dev gcc g++ make libc6-compat && \
+    yarn install --silent --pure-lockfile && \
+    yarn cache clean && \
+    apk del alpine-sdk python vips-dev fftw-dev gcc g++ make && \
+    rm -rf /var/cache/apk/*
 
-RUN chown node:1000 -R /home/node/app
+# copy all project files to working directory
+COPY . .
+COPY --chown=${USER}:${USER} . .
+RUN chown -R ${USER}:1000 ${WORKDIR}
 
-USER node
+# set user
+USER ${USER}
 
-CMD ["yarn", "dev"]
+# start application
+CMD ${START_COMMAND}

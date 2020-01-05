@@ -16,10 +16,11 @@ declare global {
 
     export interface Request {
       user?: Object;
-      socketIo?: SocketServer;
-      socketId?: string;
-      connectedUsers?: Object;
+      socketIo: SocketServer;
+      socketId: string;
+      connectedUsers: Object;
       allowedRoute?: boolean;
+      originalMethod?: string;
     }
 
     namespace Multer {

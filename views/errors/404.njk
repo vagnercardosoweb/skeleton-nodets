@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Error 405 (Method Not Allowed)</title>
+    <title>Error 404 (Not Found)</title>
 
     {# Stylesheet #}
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
@@ -18,8 +18,9 @@
     <div class="vc-welcome">
       <div class="jumbotron jumbotron-fluid">
         <div class="container text-center">
-          <h1 class="display-5">Error 405 (Method Not Allowed)</h1>
-          <p class="lead">({{ error.method }}) [{{ error.originalMethod }}] {{ error.originalUrl }}</p>
+          <h1 class="display-5">Error 404 (Not Found)</h1>
+          <p class="lead">[{{ method }}]
+            {{ originalUrl }}</p>
         </div>
       </div>
     </div>

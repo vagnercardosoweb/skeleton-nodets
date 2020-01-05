@@ -1,28 +1,24 @@
 import fs from 'fs';
-import { promisify } from 'util';
 import { basename, dirname, extname } from 'path';
 // eslint-disable-next-line no-unused-vars
 import sharp, { Sharp } from 'sharp';
+import { promisify } from 'util';
 
 import { uuid } from '../helpers';
 
-export interface MulterFileInterface extends Express.Multer.File {
+export interface IUploadFIle extends Express.Multer.File {
   name?: string;
   extension?: string;
 }
 
-class UploadService {
-  protected allowedMimeTypes: [];
+export default class Upload {
+  private static allowedMimeTypes: [];
 
-  constructor() {
-    this.allowedMimeTypes = [];
-  }
-
-  async file(
-    file: MulterFileInterface,
+  static async file(
+    file: IUploadFIle,
     path: string,
     name?: string
-  ): Promise<MulterFileInterface> {
+  ): Promise<IUploadFIle> {
     if (!file.buffer) {
       throw new Error('File passed not valid format multer.');
     }
@@ -35,14 +31,14 @@ class UploadService {
     return file;
   }
 
-  async image(
-    file: MulterFileInterface,
+  static async image(
+    file: IUploadFIle,
     path: string,
     name?: string,
     width?: number,
     height?: number,
     format?: string
-  ): Promise<MulterFileInterface | boolean> {
+  ): Promise<IUploadFIle | boolean> {
     if (!file.buffer) {
       throw new Error('File passed not valid format multer.');
     }
@@ -59,10 +55,11 @@ class UploadService {
 
     // width = width || metadata.width;
     // height = height || metadata.height;
-    width = width > metadata.width ? metadata.width : width;
-    height = height > metadata.height ? metadata.height : height;
+    width = <number>width > <number>metadata.width ? metadata.width : width;
+    height =
+      <number>height > <number>metadata.height ? metadata.height : height;
     format = format || metadata.format;
-    format = format === 'jpeg' ? 'jpg' : format;
+    format = <string>(format === 'jpeg' ? 'jpg' : format);
 
     await image
       .resize(width, height, {
@@ -73,13 +70,16 @@ class UploadService {
       })
       .toFormat(format, {})
       .toFile(
-        `${file.path}/${file.name.replace(file.extension, `.${format}`)}`
+        `${file.path}/${(file.name as string).replace(
+          <string>file.extension,
+          `.${format}`
+        )}`
       );
 
     return file;
   }
 
-  mimeTypes(types?: string | Array<string>): UploadService {
+  static mimeTypes(types?: string | Array<string>): Upload {
     if (typeof types === 'string') {
       (types as any) = [types];
     } else if (!Array.isArray(types)) {
@@ -93,11 +93,11 @@ class UploadService {
     return this;
   }
 
-  private async validateFile(
-    file: MulterFileInterface,
+  private static async validateFile(
+    file: IUploadFIle,
     path: string,
-    name: string
-  ): Promise<MulterFileInterface> {
+    name?: string
+  ): Promise<IUploadFIle> {
     file.extension = extname(file.originalname);
 
     if (path.match(/^(.*)\.[a-zA-Z0-9]{2,13}$/gi)) {
@@ -120,7 +120,7 @@ class UploadService {
     return file;
   }
 
-  private validateMimeTypes(mimeType: string): boolean {
+  private static validateMimeTypes(mimeType: string): boolean {
     if (this.allowedMimeTypes.length > 0) {
       if (!this.allowedMimeTypes.includes(<never>mimeType)) {
         throw new Error(`Mime Type ${mimeType} not allowed for upload.`);
@@ -132,7 +132,7 @@ class UploadService {
     return true;
   }
 
-  private async mkdir(folder: string): Promise<boolean> {
+  private static async mkdir(folder: string): Promise<boolean> {
     try {
       await promisify(fs.access)(folder);
     } catch (e) {
@@ -142,5 +142,3 @@ class UploadService {
     return true;
   }
 }
-
-export default new UploadService();
