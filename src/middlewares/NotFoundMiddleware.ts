@@ -4,7 +4,7 @@ import { Request, Response, RequestHandler } from 'express';
 import configApp from '../config/app';
 import { renderView } from '../helpers';
 
-export default (req: Request, res: Response) => {
+export default (req: Request, res: Response): RequestHandler => {
   let error = {
     status: 404,
     message: 'Error 404 (Not Found)',
