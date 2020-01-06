@@ -3,7 +3,7 @@ import { IncomingMessage } from 'http';
 import https, { RequestOptions } from 'https';
 
 export default class HttpRequest {
-  static send(options: RequestOptions): Promise<any> {
+  static send(options: RequestOptions): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       const request = https.request(options, function request(
         res: IncomingMessage
@@ -16,7 +16,7 @@ export default class HttpRequest {
 
         res.on('end', () => {
           const chunked = Buffer.concat(chunks);
-          resolve(chunked.toString());
+          resolve(chunked);
         });
 
         res.on('error', err => {
