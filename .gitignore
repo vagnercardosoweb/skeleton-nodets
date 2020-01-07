@@ -8,6 +8,8 @@
 !/**/tmp/uploads/.gitkeep
 /**/dist/*
 /**/tmp/mysql/*
+/**/tmp/redis/*
 !/**/tmp/mysql/.gitkeep
+!/**/tmp/redis/.gitkeep
 /**/tsconfig.tsbuildinfo
 /**/__tests__/**/database.sqlite

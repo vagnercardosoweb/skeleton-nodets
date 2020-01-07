@@ -1,6 +1,6 @@
 {
   "name": "@vagnercardoso/skeleton-nodets",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Skeleton express api + typescript",
   "keywords": [
     "nodejs",
@@ -24,14 +24,17 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development nodemon",
-    "start": "yarn build && NODE_ENV=production pm2-docker startOrRestart ./ecosystem.config.js",
-    "prebuild": "rm -rf ./dist && rm tsconfig.tsbuildinfo",
-    "build": "NODE_ENV=production tsc",
+    "dev:queues": "NODE_ENV=development nodemon --exec sucrase-node ./src/queues.ts --watch .",
+    "prestart": "yarn build",
+    "start": "NODE_ENV=production pm2 startOrRestart ./ecosystem.config.js",
+    "prebuild": "rm -rf ./dist",
+    "build": "sucrase ./src -d ./dist --transforms typescript,imports",
     "test": "NODE_ENV=test jest"
   },
   "dependencies": {
     "@sentry/node": "^5.10.2",
     "bcryptjs": "^2.4.3",
+    "bull": "^3.12.1",
     "connect-redis": "^4.0.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -54,6 +57,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
+    "@types/bull": "^3.10.6",
     "@types/connect-redis": "^0.0.13",
     "@types/express": "^4.17.2",
     "@types/express-session": "^1.15.16",
