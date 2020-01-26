@@ -42,9 +42,10 @@ services:
     ports:
       - '3306:3306'
     environment:
-      - MYSQL_DATABASE=dbname
-      - MYSQL_PASSWORD=dbpasswd
-      - MYSQL_ROOT_PASSWORD=dbuser
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=docker
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=development
 
   redis:
     image: redis:alpine
