@@ -5,7 +5,7 @@ import configApp from './app';
 // https://www.npmjs.com/package/express-session
 
 export default {
-  name: `sess_${createHash('name', configApp.key).slice(0, 25)}`,
+  name: `sess_${createHash('sess', configApp.key).slice(0, 25)}`,
   secret: `secret_${createHash('secret', configApp.key).slice(0, 25)}`,
   resave: false,
   saveUninitialized: true,

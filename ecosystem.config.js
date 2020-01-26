@@ -3,7 +3,7 @@ const __DEV__ = process.env.NOD_ENV === 'development';
 module.exports = {
   apps: [
     {
-      name: '@vagnercardoso/skeleton-express',
+      name: '@vagnercardoso/server',
       script: './dist/server.js',
       watch: __DEV__,
       merge_logs: true,
@@ -12,7 +12,7 @@ module.exports = {
       env_production: { NODE_ENV: 'production' },
     },
     {
-      name: '@vagnercardoso/skeleton-queues',
+      name: '@vagnercardoso/queues',
       script: './dist/queues.js',
       watch: __DEV__,
       merge_logs: true,
