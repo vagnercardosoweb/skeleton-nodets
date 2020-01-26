@@ -53,14 +53,20 @@ export default class Database {
     sequelize: Sequelize,
     models: ModelCtor<Model>[]
   ): void {
-    models.forEach((model: ModelCtor<Model>) => {
-      if ('configure' in model) {
-        (model as any).configure(sequelize);
-      }
+    models
+      .map((model: ModelCtor<Model>) => {
+        if ('configure' in model) {
+          (model as any).configure(sequelize);
+        }
 
-      if ('associate' in model) {
-        (model as any).associate(sequelize.models);
-      }
-    });
+        return model;
+      })
+      .map((model: ModelCtor<Model>) => {
+        if ('associate' in model) {
+          (model as any).associate(sequelize.models);
+        }
+
+        return model;
+      });
   }
 }
