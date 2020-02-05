@@ -1,19 +1,15 @@
 // eslint-disable-next-line no-unused-vars
 import IORedis, { Redis } from 'ioredis';
 
-import configRedis from '../config/redis';
-
-class Cache {
+export default class Cache {
   redis: Redis;
   prefix: string;
 
-  constructor() {
-    this.prefix = 'cache:';
-    this.redis = new IORedis({
-      port: configRedis.port,
-      host: configRedis.host,
-      keyPrefix: this.prefix,
-    });
+  constructor(options: IORedis.RedisOptions) {
+    const { keyPrefix = 'cache:' } = options;
+
+    this.prefix = keyPrefix;
+    this.redis = new IORedis({ ...options, keyPrefix });
   }
 
   set(
@@ -53,5 +49,3 @@ class Cache {
     return this.redis.del(...keysNotPrefix);
   }
 }
-
-export default new Cache();
