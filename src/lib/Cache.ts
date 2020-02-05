@@ -1,9 +1,10 @@
-import IORedis from 'ioredis';
+// eslint-disable-next-line no-unused-vars
+import IORedis, { Redis } from 'ioredis';
 
 import configRedis from '../config/redis';
 
 class Cache {
-  redis: IORedis.Redis;
+  redis: Redis;
   prefix: string;
 
   constructor() {
@@ -18,13 +19,17 @@ class Cache {
   set(
     key: IORedis.KeyType,
     value: IORedis.ValueType,
-    expiredTime?: number | string
+    expiredSeconds?: number | string
   ): Promise<string> {
     if (value) {
       value = JSON.stringify(value);
     }
 
-    return this.redis.set(key, value, 'EX', expiredTime);
+    if (expiredSeconds) {
+      return this.redis.set(key, value, 'EX', expiredSeconds);
+    }
+
+    return this.redis.set(key, value);
   }
 
   async get(key: IORedis.KeyType): Promise<any> {
