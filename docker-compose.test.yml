@@ -3,9 +3,6 @@ version: '3'
 services:
   app:
     build: .
-    tty: true
-    ports:
-      - '3333:3333'
+    command: yarn test
     environment:
-      NODE_ENV: test
-      START_COMMAND: yarn test
+      - NODE_ENV=test

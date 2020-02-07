@@ -13,7 +13,7 @@ services:
       - mysql
       - redis
     ports:
-      - '3333:3333'
+      - 3000:${PORT}
     volumes:
       - .:/home/node/app
       - /home/node/app/node_modules
@@ -29,8 +29,9 @@ services:
       - redis
     depends_on:
       - app
-    environment:
-      - NODE_ENV=development
+    volumes:
+      - .:/home/node/app
+      - /home/node/app/node_modules
 
   mysql:
     image: mysql:5.7
@@ -40,21 +41,22 @@ services:
     networks:
       - mysql
     ports:
-      - '3306:3306'
+      - '3306:${DB_PORT}'
     environment:
-      - MYSQL_USER=docker
-      - MYSQL_PASSWORD=docker
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=development
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD_ROOT}
+      - MYSQL_DATABASE=${DB_DATABASE}
 
   redis:
     image: redis:alpine
+    restart: always
     volumes:
       - ./tmp/redis:/data
     networks:
       - redis
     ports:
-      - '6379:6379'
+      - 6379:${REDIS_PORT}
 
 networks:
   mysql:
