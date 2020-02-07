@@ -15,8 +15,14 @@ export default function AppMiddleware(app: IApp): RequestHandler {
 
   app.app.set('trust proxy', true);
   app.app.set('x-powered-by', false);
-  app.app.use(express.static(configApp.path.public));
-  app.app.use('/uploads', express.static(configApp.path.uploads));
+
+  if (configApp?.path?.public) {
+    app.app.use(express.static(configApp.path.public));
+  }
+
+  if (configApp?.path?.uploads) {
+    app.app.use('/uploads', express.static(configApp.path.uploads));
+  }
 
   return (_: Request, res: Response, next: NextFunction) => {
     res.error = (err: any, status?: number) => {
