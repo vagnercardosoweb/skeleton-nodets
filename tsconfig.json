@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "ES5",
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -13,14 +13,27 @@
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "strictPropertyInitialization": false,
+    "baseUrl": "./src",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     // "composite": true,
     // "declaration": false,
-    // "declarationDir": "./dist/types",
-    "types": ["node", "jest"],
-    "typeRoots": ["node_modules/@types", "src/types"],
-    "rootDir": "./src",
-    "outDir": "./dist"
+    // "declarationDir": "./dist/@types",
+    "types": [
+      "node",
+      "jest"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "src/@types"
+    ],
+    // "paths": {}
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "__tests__"],
   "exclude": ["node_modules", "**/*.test.ts"]
 }
