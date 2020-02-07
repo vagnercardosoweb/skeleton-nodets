@@ -27,7 +27,9 @@ export default class Database {
   ): Promise<Mongoose> {
     return mongoose.connect(url, {
       useNewUrlParser: true,
-      useFindAndModify: true,
+      useUnifiedTopology: false,
+      useCreateIndex: true,
+      useFindAndModify: false,
       ...options,
     });
   }
