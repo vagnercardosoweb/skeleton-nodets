@@ -4,12 +4,13 @@ import { Schema, Document, model, DocumentQuery } from 'mongoose';
 import { getImageGravatar } from '../helpers';
 import { UserInterface } from '../interfaces/UserInterface';
 
-export interface UserSchemaInterface extends UserInterface, Document {
-  getFormattedAddress(): string;
-  findByEmail(email: string): DocumentQuery<any, any, {}>;
-}
+export type UserSchemaType = Document &
+  UserInterface & {
+    getFormattedAddress(): string;
+    findByEmail(email: string): DocumentQuery<any, any, {}>;
+  };
 
-const UserSchema = new Schema<UserSchemaInterface>(
+const UserSchema = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -22,7 +23,7 @@ const UserSchema = new Schema<UserSchemaInterface>(
   }
 );
 
-UserSchema.virtual('image').get(function gravatar() {
+UserSchema.virtual('gravatar').get(function gravatar() {
   return getImageGravatar(String(this.email).toLowerCase(), { s: 50 });
 });
 
@@ -41,4 +42,4 @@ UserSchema.static('findByEmail', function findByEmail(
 //   next();
 // });
 
-export default model<UserSchemaInterface>('UserSchema', UserSchema);
+export default model<UserSchemaType>('UserSchema', UserSchema);

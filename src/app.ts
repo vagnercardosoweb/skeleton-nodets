@@ -55,7 +55,9 @@ class App implements IApp {
   }
 
   private initNunjucks(): void {
-    this.nunjucks = View.nunjucks(resolve(configView.path, 'template'), {
+    const path = resolve(configView.path, 'template');
+
+    this.nunjucks = View.nunjucks(path, {
       ...configView.nujunks,
       express: this.app,
     });
