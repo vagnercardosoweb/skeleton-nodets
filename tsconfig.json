@@ -3,6 +3,7 @@
     "target": "ES5",
     "module": "commonjs",
     "moduleResolution": "node",
+    "lib": ["ES5", "ES2015.Promise"],
     "esModuleInterop": true,
     "sourceMap": false,
     "removeComments": true,
@@ -15,24 +16,18 @@
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "strictPropertyInitialization": false,
+    "rootDir": ".",
     "baseUrl": "./src",
-    "rootDir": "./src",
     "outDir": "./dist",
+    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     // "composite": true,
     // "declaration": false,
     // "declarationDir": "./dist/@types",
-    "types": [
-      "node",
-      "jest"
-    ],
-    "typeRoots": [
-      "node_modules/@types",
-      "src/@types"
-    ],
-    // "paths": {}
+    "types": ["node", "jest"],
+    "typeRoots": ["node_modules/@types", "./src/@types"]
   },
   "include": ["src/**/*", "__tests__"],
   "exclude": ["node_modules", "**/*.test.ts"]

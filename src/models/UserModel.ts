@@ -1,30 +1,62 @@
 // eslint-disable-next-line no-unused-vars
 import { Model, Sequelize, DataTypes } from 'sequelize';
 
+// eslint-disable-next-line no-unused-vars
+import { IUser } from '../interfaces';
 import { Password } from '../lib';
 
-export default class UserModel extends Model {
+const tableName = 'users';
+
+export default class UserModel extends Model implements IUser {
+  public readonly id!: number;
   public name!: string;
   public email!: string;
-  public readonly password!: string;
-  public password_hash!: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  public password!: string;
+  public created_at!: Date;
+  public readonly updated_at!: Date;
+  public deleted_at: Date | null;
 
   static configure(sequelize: Sequelize) {
     this.init(
       {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+        },
         name: DataTypes.STRING,
-        email: DataTypes.STRING,
-        password: DataTypes.VIRTUAL,
-        password_hash: DataTypes.STRING,
+        email: {
+          type: DataTypes.STRING(100),
+          unique: true,
+          set(value: string): any {
+            return (<any>this).setDataValue('email', value.toLowerCase());
+          },
+          validate: {
+            isEmail: true,
+          },
+        },
+        password: DataTypes.STRING,
       },
-      { sequelize, tableName: 'users' }
+      {
+        sequelize,
+        tableName,
+        paranoid: true,
+        updatedAt: 'updated_at',
+        deletedAt: 'deleted_at',
+        createdAt: 'created_at',
+        indexes: [
+          { fields: ['id'] },
+          {
+            unique: true,
+            fields: ['email'],
+          },
+        ],
+      }
     );
 
     this.addHook('beforeSave', async (user: UserModel) => {
-      if (user.password) {
-        user.password_hash = await Password.create(user.password);
+      if (user.changed('password')) {
+        user.password = await Password.create(user.password);
       }
     });
 
@@ -35,7 +67,7 @@ export default class UserModel extends Model {
 
   // static findByEmail(email) {...}
 
-  checkPassword(password: string) {
-    return Password.verify(password, this.password_hash);
+  verifyPassword(password: string): Promise<boolean> {
+    return Password.verify(password, this.password);
   }
 }

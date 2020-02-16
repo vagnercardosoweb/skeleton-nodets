@@ -1,10 +1,11 @@
+const bcrypt = require('bcryptjs');
 // eslint-disable-next-line no-unused-vars
 const { QueryInterface } = require('sequelize');
-const bcrypt = require('bcryptjs');
 
 module.exports = {
   /**
    * @param {QueryInterface} queryInterface
+   * @param {*} Sequelize
    */
   up: (queryInterface, Sequelize) => {
     const users = [];
@@ -13,7 +14,7 @@ module.exports = {
       users.push({
         name: `Name ${i}`,
         email: `email${i}@gmail.com`,
-        password_hash: bcrypt.hashSync(`password${i}`, 12),
+        password: bcrypt.hashSync(`password${i}`, 12),
         created_at: Sequelize.fn('NOW'),
         updated_at: Sequelize.fn('NOW'),
       });

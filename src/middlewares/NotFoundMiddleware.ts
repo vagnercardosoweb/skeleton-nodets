@@ -1,10 +1,13 @@
 // eslint-disable-next-line no-unused-vars
-import { Request, Response } from 'express';
+import { Request, RequestHandler, Response } from 'express';
 
 import configApp from '../config/app';
 import { renderView } from '../helpers';
 
-export default (req: Request, res: Response): Response => {
+export default (): RequestHandler => (
+  req: Request,
+  res: Response
+): Response => {
   let error = {
     status: 404,
     message: 'Error 404 (Not Found)',

@@ -6,7 +6,7 @@ require('dotenv').config({
 const { resolve } = require('path');
 
 module.exports = {
-  config: resolve(__dirname, 'src', 'config', 'database.ts'),
+  config: resolve(__dirname, 'database', 'config.js'),
   'models-path': resolve(__dirname, 'src', 'models'),
   'seeders-path': resolve(__dirname, 'database', 'seeders'),
   'migrations-path': resolve(__dirname, 'database', 'migrations'),

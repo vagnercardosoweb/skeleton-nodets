@@ -1,17 +1,16 @@
 // eslint-disable-next-line no-unused-vars
 import { Response } from 'express';
 
+import packageJson from '../../package.json';
+
 class ApiController {
   async index(_: any, res: Response) {
     return res.success({
-      date: new Date(),
-      company: 'VCWeb Networks',
-      developer: [
-        {
-          name: 'Vagner dos Santos Cardoso',
-          email: 'dev@vcwebnetworks.com.br',
-        },
-      ],
+      name: packageJson.name,
+      description: packageJson.description,
+      version: packageJson.version,
+      license: packageJson.license,
+      maintainers: packageJson.maintainers,
     });
   }
 }

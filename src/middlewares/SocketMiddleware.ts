@@ -7,7 +7,7 @@ import { IApp } from '../app';
 let socketId: string;
 const connectedUsers: { [key: string]: boolean } = {};
 
-export default function SocketMiddleware(app: IApp): RequestHandler {
+export default (app: IApp): RequestHandler => {
   app.socketIo.on('connection', socket => {
     socketId = socket.id;
     connectedUsers[socket.id] = true;
@@ -28,4 +28,4 @@ export default function SocketMiddleware(app: IApp): RequestHandler {
 
     next();
   };
-}
+};

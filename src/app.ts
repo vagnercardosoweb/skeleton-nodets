@@ -71,7 +71,8 @@ class App implements IApp {
     }
   }
 
-  private async initSequelize(): Promise<void> {
+  private initSequelize(): void {
+    // @ts-ignore
     this.sequelize = Database.sequelize({
       ...configDatabase,
       models: Object.values(models),

@@ -1,45 +1,43 @@
 /* eslint-disable no-unused-vars */
-import { Schema, Document, model, DocumentQuery } from 'mongoose';
+import { Document, DocumentQuery, Model, model, Schema } from 'mongoose';
 
-import { getImageGravatar } from '../helpers';
-import { UserInterface } from '../interfaces/UserInterface';
+import { IUser } from '../interfaces';
+import { Password } from '../lib';
 
-export type UserSchemaType = Document &
-  UserInterface & {
-    getFormattedAddress(): string;
-    findByEmail(email: string): DocumentQuery<any, any, {}>;
-  };
+export interface IUserSchema extends IUser, Document {
+  findByEmail(email: string): DocumentQuery<IUserSchema, IUserSchema>;
+}
 
-const UserSchema = new Schema(
+const UserSchema: Schema<IUserSchema> = new Schema<IUserSchema>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
   },
   {
-    timestamps: true,
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    },
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
 
-UserSchema.virtual('gravatar').get(function gravatar() {
-  return getImageGravatar(String(this.email).toLowerCase(), { s: 50 });
+UserSchema.pre<IUserSchema>('save', async function preSave(next) {
+  if (this.isModified('password')) {
+    this.password = await Password.create(this.password);
+  }
+
+  next();
 });
 
-UserSchema.methods.getFormattedAddress = function formattedAddress(): string {
-  return `${this.name} <${this.email}>`;
-};
+UserSchema.loadClass(
+  class UserClass extends Model {
+    static findByEmail(email: string): DocumentQuery<IUserSchema, IUserSchema> {
+      return this.findOne({ email });
+    }
+  }
+);
 
-UserSchema.static('findByEmail', function findByEmail(
-  email: string
-): DocumentQuery<any, any, {}> {
-  return this.findOne({ email });
-});
-
-// Middleware
-// UserSchema.pre('save', function(next) {
-//   next();
-// });
-
-export default model<UserSchemaType>('UserSchema', UserSchema);
+export default model<IUserSchema>('users', UserSchema);

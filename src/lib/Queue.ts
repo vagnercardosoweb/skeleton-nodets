@@ -72,7 +72,11 @@ export default class Queue implements IQueue {
   }
 
   closeQueues() {
-    this.queues.forEach(queue => queue.bull.close());
+    this.queues.forEach(queue => {
+      queue.bull.close();
+
+      process.exit(1);
+    });
   }
 
   process() {

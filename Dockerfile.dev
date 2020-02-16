@@ -2,15 +2,15 @@ FROM node:12.14-alpine
 
 # set environments
 ENV USER=node
-ENV ROOT_DIR='./dist'
+ENV ROOT_DIR='.'
 ENV WORKDIR=/home/app
 ENV TZ=America/Sao_Paulo
 ENV NPM_LOCK_FILE=yarn.lock
 ENV NPM_START_COMMAND='yarn start'
 ENV NPM_CONFIG_LOGLEVEL=warn
-ENV NPM_INSTALL_COMMAND='yarn install --silent --production --pure-lockfile'
+ENV NPM_INSTALL_COMMAND='yarn install --silent --pure-lockfile'
 ENV NPM_CLEAR_CACHE_COMMAND='yarn cache clean'
-ENV NPM_INSTALL_GLOBAL_COMMAND='yarn global add pm2'
+ENV NPM_INSTALL_GLOBAL_COMMAND='yarn global add pm2 typescript nodemon'
 
 # set workdir application
 WORKDIR ${WORKDIR}

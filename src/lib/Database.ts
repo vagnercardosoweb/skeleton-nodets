@@ -27,9 +27,10 @@ export default class Database {
   ): Promise<Mongoose> {
     return mongoose.connect(url, {
       useNewUrlParser: true,
-      useUnifiedTopology: false,
+      useUnifiedTopology: true,
       useCreateIndex: true,
       useFindAndModify: false,
+      autoIndex: true,
       ...options,
     });
   }
@@ -46,7 +47,7 @@ export default class Database {
         underscored: true,
         charset: 'utf8',
         freezeTableName: true,
-        paranoid: true,
+        timestamps: true,
       },
       pool: { min: 0, max: 10 },
       ...options,

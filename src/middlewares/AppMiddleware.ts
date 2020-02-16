@@ -1,16 +1,18 @@
 /* eslint-disable no-unused-vars */
 import express, {
-  Request,
-  Response,
   NextFunction,
+  Request,
   RequestHandler,
+  Response,
 } from 'express';
-import { ValidationError } from 'yup';
+import { ValidationError as ValidationErrorSequelize } from 'sequelize';
+import { ValidationError as ValidationErrorYup } from 'yup';
 
 import { IApp } from '../app';
 import configApp from '../config/app';
+import { createRandomInt } from '../helpers';
 
-export default function AppMiddleware(app: IApp): RequestHandler {
+export default (app: IApp): RequestHandler => {
   const __DEV__ = process.env.NODE_ENV === 'development';
 
   app.app.set('trust proxy', true);
@@ -29,28 +31,53 @@ export default function AppMiddleware(app: IApp): RequestHandler {
       // eslint-disable-next-line no-console
       if (__DEV__) console.error(err);
 
-      const name = err.name || null;
-      let message = err.message || err;
-      let validators;
+      status = <number>(err?.status || status || 400);
 
-      if (err instanceof ValidationError && err.inner) {
-        message = err.errors[Math.floor(Math.random() * err.errors.length)];
-        validators = err.inner;
+      const name = err?.name || null;
+      const description = err?.description || null;
+      const errorIndex = (len: number) => createRandomInt(0, len);
+
+      let i;
+      let message = err?.message || null;
+      let details = null;
+
+      if (err instanceof ValidationErrorYup && err.inner) {
+        i = errorIndex(err.inner.length);
+        message = err.inner[i].message;
+        details = err.inner;
       }
 
-      status = <number>(status || err.status || 400);
-      res.status(status).json({ name, status, message, validators });
+      if (err instanceof ValidationErrorSequelize && err.errors) {
+        i = errorIndex(err.errors.length);
+        message = err.errors[i].message;
+        details = err.errors;
+      }
+
+      res.status(status).json({
+        error: {
+          status,
+          name,
+          message,
+          description,
+          details,
+        },
+      });
 
       return res;
     };
 
-    res.success = (data: any, status?: number) => {
+    res.success = (data: any = {}, status?: number) => {
       status = status || res.statusCode || 200;
-      res.status(status).json({ status, ...data });
+
+      res.status(status).json({
+        error: null,
+        status,
+        ...data,
+      });
 
       return res;
     };
 
     return next();
   };
-}
+};
