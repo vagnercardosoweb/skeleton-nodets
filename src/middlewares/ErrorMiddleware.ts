@@ -8,11 +8,12 @@ import { IApp } from '../app';
 import configApp from '../config/app';
 import configSentry from '../config/sentry';
 
-export default function ErrorMiddleware(app: IApp): ErrorRequestHandler {
+export default (app: IApp): ErrorRequestHandler => {
   if (configSentry.dsn && process.env.NODE_ENV === 'production') {
     app.app.use(Sentry.Handlers.errorHandler());
   }
 
+  // @ts-ignore
   return async (err: any, req: Request, res: Response, next: NextFunction) => {
     res.statusCode = err.status || 500;
 
@@ -32,4 +33,4 @@ export default function ErrorMiddleware(app: IApp): ErrorRequestHandler {
       message: 'Internal Server Error.',
     });
   };
-}
+};
