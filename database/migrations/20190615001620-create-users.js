@@ -1,14 +1,16 @@
 // eslint-disable-next-line no-unused-vars
 const { QueryInterface, DataTypes } = require('sequelize');
 
+const tableName = 'users';
+
 module.exports = {
   /**
    * @param {QueryInterface} queryInterface
    * @param {DataTypes} dataTypes
    */
-  up: (queryInterface, dataTypes) => {
-    return queryInterface.createTable(
-      'users',
+  up: async (queryInterface, dataTypes) => {
+    await queryInterface.createTable(
+      tableName,
       {
         id: {
           type: dataTypes.INTEGER,
@@ -21,11 +23,11 @@ module.exports = {
           allowNull: false,
         },
         email: {
-          type: dataTypes.STRING,
+          type: dataTypes.STRING(100),
           allowNull: false,
           unique: true,
         },
-        password_hash: {
+        password: {
           type: dataTypes.STRING,
           allowNull: false,
         },
@@ -37,15 +39,25 @@ module.exports = {
           type: dataTypes.DATE,
           allowNull: false,
         },
+        deleted_at: {
+          type: dataTypes.DATE,
+          allowNull: true,
+          defaultValue: null,
+        },
       },
       { engine: 'InnoDB', charset: 'utf8', collate: 'utf8_general_ci' }
     );
+
+    await queryInterface.addIndex(tableName, ['id']);
+    await queryInterface.addIndex(tableName, ['email'], { unique: true });
+    await queryInterface.addIndex(tableName, ['created_at']);
+    await queryInterface.addIndex(tableName, ['deleted_at']);
   },
 
   /**
    * @param {QueryInterface} queryInterface
    */
   down: queryInterface => {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable(tableName);
   },
 };
