@@ -23,13 +23,15 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon --exec sucrase-node ./src/server.ts --watch .",
-    "dev:queues": "NODE_ENV=development nodemon --exec sucrase-node ./src/queues.ts --watch .",
-    "prestart": "npm run build",
-    "start": "NODE_ENV=production pm2 startOrRestart ./ecosystem.config.js",
-    "prebuild": "rm -rf ./dist",
-    "build": "sucrase ./src -d ./dist --transforms typescript,imports",
-    "test": "NODE_ENV=test jest"
+    "dev": "cross-env NODE_ENV=development nodemon --exec sucrase-node ./src/server.ts --watch .",
+    "dev:queues": "cross-env NODE_ENV=development nodemon --exec sucrase-node ./src/queues.ts --watch .",
+    "dev:docker": "./scripts/dev-docker.sh",
+    "prestart": "sequelize db:migrate",
+    "start": "cross-env NODE_ENV=production pm2-runtime start ./ecosystem.config.js",
+    "prebuild": "./scripts/pre-build.sh",
+    "build": "sucrase ./src -d ./dist/src --transforms typescript,imports",
+    "test": "cross-env NODE_ENV=test jest",
+    "deploy:heroku": "yarn build && ./scripts/deploy-heroku.sh"
   },
   "dependencies": {
     "@sentry/node": "^5.11.1",
