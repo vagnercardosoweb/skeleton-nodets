@@ -39,8 +39,7 @@
   },
   "lint-staged": {
     "{database,src,__tests__}/**/*.{js,ts}": [
-      "eslint --ext js,ts --fix .",
-      "git add"
+      "eslint --ext js,ts --fix ."
     ]
   },
   "config": {
