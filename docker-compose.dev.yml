@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: app:latest
+    restart: always
+    command: yarn dev
+    networks:
+      - mysql
+      - redis
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - .:/home/app
+      - /home/app/node_modules
+    environment:
+      - NODE_ENV=development
+
+  queues:
+    image: app:latest
+    restart: always
+    command: yarn dev:queues
+    networks:
+      - mysql
+      - redis
+    depends_on:
+      - app
+    volumes:
+      - .:/home/app
+      - /home/app/node_modules
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - ./tmp/mysql:/var/lib/mysql
+    networks:
+      - mysql
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root}
+      - MYSQL_DATABASE=${DB_DATABASE}
+
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - ./tmp/redis:/data
+    networks:
+      - redis
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+
+networks:
+  mysql:
+  redis:
