@@ -1,5 +1,8 @@
 /* eslint-disable no-unused-vars */
-import mongoose, { Mongoose } from 'mongoose';
+import mongoose, {
+  Mongoose,
+  ConnectionOptions as MongooseConnectionOptions,
+} from 'mongoose';
 import { Sequelize, Options, Model, ModelCtor } from 'sequelize';
 
 export interface IDatabaseSequelizeOptions extends Options {
@@ -18,10 +21,17 @@ export default class Database {
     return sequelize;
   }
 
-  public static mongoose(url: string): Promise<Mongoose> {
+  public static mongoose(
+    url: string,
+    options: MongooseConnectionOptions = {}
+  ): Promise<Mongoose> {
     return mongoose.connect(url, {
       useNewUrlParser: true,
-      useFindAndModify: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      autoIndex: true,
+      ...options,
     });
   }
 
