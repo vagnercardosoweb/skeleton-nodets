@@ -40,4 +40,17 @@ Yup.string.prototype.phone = function phone(message?: string) {
   });
 };
 
+Yup.string.prototype.completeName = function completeName(message?: string) {
+  message = message || 'You need to enter your full name, example: John Donne';
+
+  return this.test({
+    name: 'completeName',
+    message,
+    exclusive: true,
+    test(value: string) {
+      return (value || '').split(' ', 2).length === 2;
+    },
+  });
+};
+
 export default Yup;
