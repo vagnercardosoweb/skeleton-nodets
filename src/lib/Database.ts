@@ -37,6 +37,7 @@ export default class Database {
         underscored: true,
         charset: 'utf8',
         freezeTableName: true,
+        timestamps: true,
       },
       pool: { min: 0, max: 10 },
       ...options,
