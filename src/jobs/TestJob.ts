@@ -6,7 +6,7 @@ class TestJob {
   key: string = 'TestJob';
 
   handle(job: Job): any {
-    console.log(`handle`, job.id);
+    console.log(`handle`, job.data);
   }
 
   onFailed(job: Job): any {
