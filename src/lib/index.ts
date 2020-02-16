@@ -1,3 +1,4 @@
+export { default as Cache } from './Cache';
 export { default as Database } from './Database';
 export { default as HttpRequest } from './HttpRequest';
 export { default as Jwt } from './Jwt';
