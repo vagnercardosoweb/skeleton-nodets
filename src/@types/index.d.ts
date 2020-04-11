@@ -7,6 +7,8 @@
 import * as express from 'express';
 import { Server as SocketServer } from 'socket.io';
 import { Schema, StringSchema } from 'yup';
+import { Sequelize } from 'sequelize';
+import { Mongoose } from 'mongoose';
 
 declare module 'yup' {
   export interface StringSchema<T extends string | null | undefined = string>
@@ -33,10 +35,15 @@ declare global {
   // }
 
   namespace Express {
+    export interface Application {
+      sequelize: Sequelize;
+      mongoose: Mongoose;
+    }
+
     export interface Response {
       sentry?: string;
       error(err: any, status?: number): Response;
-      success(data: any, status?: number): Response;
+      success(data?: any, status?: number): Response;
     }
 
     export interface Request {

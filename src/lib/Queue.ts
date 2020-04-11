@@ -39,7 +39,7 @@ export default class Queue implements IQueue {
 
   get queues() {
     if (!this._queues) {
-      this._queues = this.jobs.map(job => {
+      this._queues = this.jobs.map((job) => {
         return {
           bull: new Bull(job.key, this.bullOptions),
           name: job.key,
@@ -56,7 +56,7 @@ export default class Queue implements IQueue {
   }
 
   get(name: string) {
-    const queue = this.queues.find(q => q.name === name);
+    const queue = this.queues.find((q) => q.name === name);
 
     if (!queue) {
       throw new Error('Queue not exists.');
@@ -72,7 +72,7 @@ export default class Queue implements IQueue {
   }
 
   closeQueues() {
-    this.queues.forEach(queue => {
+    this.queues.forEach((queue) => {
       queue.bull.close();
 
       process.exit(1);
@@ -80,7 +80,7 @@ export default class Queue implements IQueue {
   }
 
   process() {
-    this.queues.forEach(queue => {
+    this.queues.forEach((queue) => {
       queue.bull.process(queue.concurrency || 1, queue.handle);
 
       if (queue.onFailed) {

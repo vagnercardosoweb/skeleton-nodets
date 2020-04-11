@@ -1,7 +1,12 @@
 /* eslint-disable no-template-curly-in-string */
 import * as Yup from 'yup';
 
-import { validateCpf, validateCnpj, onlyNumber } from '../helpers';
+import {
+  onlyNumber,
+  validateCnpj,
+  validateCpf,
+  validateCompleteName,
+} from '../helpers';
 
 Yup.string.prototype.cpf = function cpf(message?: string) {
   message = message || '${path} must be valid cpf.';
@@ -47,9 +52,7 @@ Yup.string.prototype.completeName = function completeName(message?: string) {
     name: 'completeName',
     message,
     exclusive: true,
-    test(value: string) {
-      return (value || '').split(' ', 2).length === 2;
-    },
+    test: validateCompleteName,
   });
 };
 

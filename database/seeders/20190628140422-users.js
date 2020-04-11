@@ -29,7 +29,7 @@ module.exports = {
   /**
    * @param {QueryInterface} queryInterface
    */
-  down: queryInterface => {
+  down: (queryInterface) => {
     return queryInterface.bulkDelete('users', null, {});
   },
 };

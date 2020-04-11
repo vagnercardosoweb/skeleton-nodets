@@ -1,2 +1,2 @@
-export { default as AppError } from './AppError';
-export { default as ResponseError } from './ResponseError';
+export { default as Exception } from './Exception';
+export { default as ResponseException } from './ResponseException';

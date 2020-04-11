@@ -88,7 +88,7 @@ export default class Upload {
       );
     }
 
-    (types as []).map(type => this.allowedMimeTypes.push(type));
+    (types as []).map((type) => this.allowedMimeTypes.push(type));
 
     return this;
   }

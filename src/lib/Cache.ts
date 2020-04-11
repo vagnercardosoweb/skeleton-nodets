@@ -44,7 +44,7 @@ export default class Cache {
 
   async deletePrefix(prefix: string): Promise<number> {
     const keys = await this.redis.keys(`${this.prefix}${prefix}:*`);
-    const keysNotPrefix = keys.map(key => key.replace(this.prefix, ''));
+    const keysNotPrefix = keys.map((key) => key.replace(this.prefix, ''));
 
     return this.redis.del(...keysNotPrefix);
   }
