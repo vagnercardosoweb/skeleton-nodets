@@ -35,7 +35,7 @@ describe('Helpers', () => {
   });
 
   it('Formats value in reais.', async () => {
-    expect(formatMoneyBrl(1250)).toContain('R$1,250.00');
+    expect(formatMoneyBrl(1250)).toMatch(/^R\$\s1,250\.00$/);
   });
 
   it('normalize price value.', () => {

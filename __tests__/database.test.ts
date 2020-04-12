@@ -46,6 +46,10 @@ class AddressModel extends Model {
         user_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          references: {
+            key: 'id',
+            model: 'users',
+          },
         },
         zipcode: DataTypes.STRING,
       },
