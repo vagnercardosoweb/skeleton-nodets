@@ -18,7 +18,7 @@
     "strictPropertyInitialization": false,
     "rootDir": ".",
     "baseUrl": "./src",
-    "outDir": "./dist",
+    "outDir": "./dist/src",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,

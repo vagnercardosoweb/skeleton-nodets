@@ -10,7 +10,7 @@ export default class HttpRequest {
       ) {
         const chunks: any[] = [];
 
-        res.on('data', chunk => {
+        res.on('data', (chunk) => {
           chunks.push(chunk);
         });
 
@@ -19,7 +19,7 @@ export default class HttpRequest {
           resolve(chunked);
         });
 
-        res.on('error', err => {
+        res.on('error', (err) => {
           reject(err);
         });
       });

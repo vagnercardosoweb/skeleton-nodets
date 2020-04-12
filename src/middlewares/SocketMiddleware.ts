@@ -8,7 +8,7 @@ let socketId: string;
 const connectedUsers: { [key: string]: boolean } = {};
 
 export default (app: IApp): RequestHandler => {
-  app.socketIo.on('connection', socket => {
+  app.socketIo.on('connection', (socket) => {
     socketId = socket.id;
     connectedUsers[socket.id] = true;
 

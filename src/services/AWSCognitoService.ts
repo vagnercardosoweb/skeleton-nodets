@@ -9,7 +9,14 @@ const {
   AWS_COGNITO_USER_POOL_ID,
 } = process.env;
 
-class AWSCognitoService {
+export interface AuthenticationResultType {
+  idToken?: AWS.CognitoIdentityServiceProvider.TokenModelType;
+  tokenType?: AWS.CognitoIdentityServiceProvider.StringType;
+  expiresIn?: AWS.CognitoIdentityServiceProvider.IntegerType;
+  accessToken?: AWS.CognitoIdentityServiceProvider.TokenModelType;
+}
+
+export class AWSCognitoService {
   protected client: AWS.CognitoIdentityServiceProvider;
   protected clientId: string;
   protected userPoolId: string;
@@ -30,11 +37,11 @@ class AWSCognitoService {
 
   async getUser(
     email: string
-  ): Promise<AWS.CognitoIdentityServiceProvider.Types.AdminGetUserResponse> {
+  ): Promise<AWS.CognitoIdentityServiceProvider.AdminGetUserResponse> {
     return this.client
       .adminGetUser({
         UserPoolId: this.userPoolId,
-        Username: email,
+        Username: email.toLowerCase(),
       })
       .promise();
   }
@@ -52,8 +59,8 @@ class AWSCognitoService {
   listUsers(
     limit?: number,
     filters?: { name: string; value: string; contains?: boolean }[],
-    attributes?: AWS.CognitoIdentityServiceProvider.Types.SearchedAttributeNamesListType
-  ): Promise<AWS.CognitoIdentityServiceProvider.Types.ListUsersResponse> {
+    attributes?: AWS.CognitoIdentityServiceProvider.SearchedAttributeNamesListType
+  ): Promise<AWS.CognitoIdentityServiceProvider.ListUsersResponse> {
     return this.client
       .listUsers({
         UserPoolId: this.userPoolId,
@@ -68,23 +75,38 @@ class AWSCognitoService {
       })
       .promise();
   }
+  async updatePassword(
+    email: string,
+    password: string
+  ): Promise<AWS.CognitoIdentityServiceProvider.AdminSetUserPasswordResponse> {
+    return this.client
+      .adminSetUserPassword({
+        Username: email,
+        Password: password,
+        Permanent: true,
+        UserPoolId: this.userPoolId,
+      })
+      .promise();
+  }
 
   async createUser(
     email: string,
     password: string,
     userId: string | number
-  ): Promise<AWS.CognitoIdentityServiceProvider.Types.AdminCreateUserResponse> {
+  ): Promise<AWS.CognitoIdentityServiceProvider.AdminCreateUserResponse> {
+    const newEmail = email.toLowerCase();
+
     return this.client
       .adminCreateUser({
         UserPoolId: this.userPoolId,
-        Username: email,
+        Username: newEmail,
         TemporaryPassword: password,
         MessageAction: 'SUPPRESS',
         DesiredDeliveryMediums: ['EMAIL'],
         UserAttributes: [
           {
             Name: 'email',
-            Value: email,
+            Value: newEmail,
           },
           {
             Name: 'email_verified',
@@ -99,65 +121,60 @@ class AWSCognitoService {
       .promise();
   }
 
+  async createUserOrLogin(
+    email: string,
+    password: string,
+    userId: string | number
+  ): Promise<AuthenticationResultType> {
+    await this.createUser(email, password, userId);
+
+    return this.initiateAuth(email, password);
+  }
+
   async initiateAuth(
     email: string,
     password: string
-  ): Promise<
-    AWS.CognitoIdentityServiceProvider.Types.AdminInitiateAuthResponse
-  > {
+  ): Promise<AuthenticationResultType> {
     const initiateAuth = await this.client
       .adminInitiateAuth({
         UserPoolId: this.userPoolId,
         ClientId: this.clientId,
         AuthFlow: 'ADMIN_NO_SRP_AUTH',
         AuthParameters: {
-          USERNAME: email,
+          USERNAME: email.toLowerCase(),
           PASSWORD: password,
         },
       })
       .promise();
 
-    const { ChallengeName, Session } = initiateAuth;
+    const { ChallengeName, Session, AuthenticationResult } = initiateAuth;
 
     if (ChallengeName === 'NEW_PASSWORD_REQUIRED') {
       return this.respondToAuthChallenge(email, password, Session);
     }
 
-    return initiateAuth;
+    return this.makeAuthenticationResult(AuthenticationResult);
   }
 
   async respondToAuthChallenge(
     email: string,
     password: string,
     session?: AWS.CognitoIdentityServiceProvider.SessionType
-  ): Promise<
-    AWS.CognitoIdentityServiceProvider.Types.AdminRespondToAuthChallengeResponse
-  > {
-    return this.client
+  ): Promise<AuthenticationResultType> {
+    const { AuthenticationResult } = await this.client
       .adminRespondToAuthChallenge({
         UserPoolId: this.userPoolId,
         ClientId: this.clientId,
         ChallengeName: 'NEW_PASSWORD_REQUIRED',
         ChallengeResponses: {
-          USERNAME: email,
+          USERNAME: email.toLowerCase(),
           NEW_PASSWORD: password,
         },
         Session: session,
       })
       .promise();
-  }
 
-  async createUserOrLogin(
-    email: string,
-    password: string,
-    userId: string | number
-  ): Promise<
-    AWS.CognitoIdentityServiceProvider.Types.AdminRespondToAuthChallengeResponse
-  > {
-    await this.createUser(email, password, userId);
-    const initiateAuth = await this.initiateAuth(email, password);
-
-    return this.respondToAuthChallenge(email, password, initiateAuth.Session);
+    return this.makeAuthenticationResult(AuthenticationResult);
   }
 
   async deleteUser(
@@ -166,7 +183,7 @@ class AWSCognitoService {
     return this.client
       .adminDeleteUser({
         UserPoolId: this.userPoolId,
-        Username: email,
+        Username: email.toLowerCase(),
       })
       .promise();
   }
@@ -179,7 +196,7 @@ class AWSCognitoService {
     return this.client
       .adminUserGlobalSignOut({
         UserPoolId: this.userPoolId,
-        Username: email,
+        Username: email.toLowerCase(),
       })
       .promise();
   }
@@ -192,6 +209,17 @@ class AWSCognitoService {
         AccessToken: accessToken,
       })
       .promise();
+  }
+
+  private makeAuthenticationResult(
+    result?: AWS.CognitoIdentityServiceProvider.AuthenticationResultType
+  ): AuthenticationResultType {
+    return {
+      idToken: result?.IdToken,
+      tokenType: result?.TokenType,
+      expiresIn: result?.ExpiresIn,
+      accessToken: result?.AccessToken,
+    };
   }
 }
 

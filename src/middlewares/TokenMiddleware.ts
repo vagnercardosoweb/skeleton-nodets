@@ -2,7 +2,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 
 import configApp from '../config/app';
-import { ResponseError } from '../erros';
+import { ResponseException } from '../erros';
 import { Jwt } from '../lib';
 
 export default (): RequestHandler => async (
@@ -30,7 +30,7 @@ export default (): RequestHandler => async (
       token = req.query.token;
 
       if (!token) {
-        throw new ResponseError({
+        throw new ResponseException({
           status: 403,
           message: 'Access blocked.',
         });
@@ -44,7 +44,7 @@ export default (): RequestHandler => async (
       req.userToken = token;
     } catch (error) {
       if (process.env.API_KEY !== token) {
-        throw new ResponseError({
+        throw new ResponseException({
           status: 401,
           message: 'Access denied.',
           error,

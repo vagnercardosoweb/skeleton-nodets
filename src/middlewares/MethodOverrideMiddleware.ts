@@ -19,7 +19,7 @@ export default (): RequestHandler => (
 
   // Recover the custom method in the body
   if (req.body && typeof req.body === 'object') {
-    ['_method', '_METHOD'].forEach(method => {
+    ['_method', '_METHOD'].forEach((method) => {
       if (typeof req.body[method] !== 'undefined') {
         newMethod = req.body[method];
         delete req.body[method];

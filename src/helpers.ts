@@ -56,17 +56,11 @@ export function createHash(
   algorithm = 'sha256',
   encoding: HexBase64Latin1Encoding = 'hex'
 ): string {
-  return crypto
-    .createHmac(algorithm, key)
-    .update(value)
-    .digest(encoding);
+  return crypto.createHmac(algorithm, key).update(value).digest(encoding);
 }
 
 export function createHashMd5(value: BinaryLike): string {
-  return crypto
-    .createHash('md5')
-    .update(value)
-    .digest('hex');
+  return crypto.createHash('md5').update(value).digest('hex');
 }
 
 export function createRandomBytes(length?: number): Promise<string> {
@@ -110,10 +104,7 @@ export function createDateInstance(
     const dateTime = typeof dateSplit[1] !== 'undefined' ? dateSplit[1] : '';
 
     if (dateSplit[0].match(/^\d{2}\/\d{2}\/\d{4}$/gi)) {
-      const dateReverse = dateSplit[0]
-        .split('/')
-        .reverse()
-        .join('/');
+      const dateReverse = dateSplit[0].split('/').reverse().join('/');
 
       date = `${dateReverse} ${dateTime}`;
     } else if (dateSplit[0].match(/^\d{4}\/\d{2}\/\d{2}$/gi)) {
@@ -166,7 +157,7 @@ export function convertToCamelCaseObject(obj?: any): object | boolean {
 
   const newObj: { [key: string]: string } = {};
 
-  Object.keys(obj).map(key => {
+  Object.keys(obj).map((key) => {
     newObj[convertToCamelCaseString(key)] = obj[key];
 
     return newObj;
@@ -240,6 +231,15 @@ export function validateCnpj(cnpj: string | number): boolean {
   return true;
 }
 
+export function validateEmail(value: string): boolean {
+  const regex = new RegExp(
+    // eslint-disable-next-line no-control-regex
+    /^((([a-z]|\d|[!#\\$%&'\\*\\+\-\\/=\\?\\^_`{\\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\\$%&'\\*\\+\-\\/=\\?\\^_`{\\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i
+  );
+
+  return regex.test(value);
+}
+
 export function onlyNumber(value: any): string | number {
   return String(value).replace(/[^\d]/gi, '');
 }
@@ -280,13 +280,51 @@ export function renderView(template: string, context: object): string {
   return nunjucks.render(`${template}.njk`, context || {});
 }
 
+export function rangeNumber(size: number, start: number = 0): Array<number> {
+  return [...Array(size).keys()].map((i) => i + start);
+}
+
+export function rangeCharacters(
+  startChar: string,
+  endChar: string
+): Array<string> {
+  return String.fromCharCode(
+    ...rangeNumber(
+      endChar.charCodeAt(0) - startChar.charCodeAt(0) + 1,
+      startChar.charCodeAt(0)
+    )
+  );
+}
+
+export function validateSequenceValue(value: any): boolean {
+  const numbers = rangeNumber(9);
+  const characters = rangeCharacters('a', 'z');
+  const valueLower = String(value).toLowerCase();
+  const reverseArray = (arr: Array<any>) => arr.reverse().join('');
+
+  if (
+    numbers.join('').indexOf(valueLower) ||
+    reverseArray(numbers).indexOf(valueLower)
+  ) {
+    return true;
+  }
+
+  return !!(
+    characters.join('').indexOf(valueLower) ||
+    reverseArray(characters).indexOf(valueLower)
+  );
+}
+
+export function validateCompleteName(value: string): boolean {
+  return (value || '').split(' ', 2).length === 2;
+}
+
 export function bytesToSize(bytes: number, decimals: number = 2) {
   if (bytes === 0) return '0 Bytes';
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;

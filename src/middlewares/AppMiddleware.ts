@@ -18,6 +18,14 @@ export default (app: IApp): RequestHandler => {
   app.app.set('trust proxy', true);
   app.app.set('x-powered-by', false);
 
+  if (app.mongoose) {
+    app.app.mongoose = app.mongoose;
+  }
+
+  if (app.sequelize) {
+    app.app.sequelize = app.sequelize;
+  }
+
   if (configApp?.path?.public) {
     app.app.use(express.static(configApp.path.public));
   }
@@ -39,28 +47,22 @@ export default (app: IApp): RequestHandler => {
 
       let i;
       let message = err?.message || null;
-      let details = null;
+      let details = err?.details || null;
 
       if (err instanceof ValidationErrorYup && err.inner) {
         i = errorIndex(err.inner.length);
-        message = err.inner[i].message;
+        message = err.inner?.[i]?.message || message;
         details = err.inner;
       }
 
       if (err instanceof ValidationErrorSequelize && err.errors) {
         i = errorIndex(err.errors.length);
-        message = err.errors[i].message;
+        message = err.errors?.[i]?.message || message;
         details = err.errors;
       }
 
       res.status(status).json({
-        error: {
-          status,
-          name,
-          message,
-          description,
-          details,
-        },
+        error: { status, name, message, description, details },
       });
 
       return res;
@@ -68,12 +70,7 @@ export default (app: IApp): RequestHandler => {
 
     res.success = (data: any = {}, status?: number) => {
       status = status || res.statusCode || 200;
-
-      res.status(status).json({
-        error: null,
-        status,
-        ...data,
-      });
+      res.status(status).json({ error: null, status, ...data });
 
       return res;
     };

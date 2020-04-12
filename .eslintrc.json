@@ -15,7 +15,15 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "ignorePatterns": ["public", "@types"],
+  "ignorePatterns": [
+    "public",
+    "@types",
+    "dist",
+    "views",
+    "tmp",
+    "scripts",
+    "node_modules"
+  ],
   "rules": {
     "import/no-cycle": "off",
     "prettier/prettier": "error",

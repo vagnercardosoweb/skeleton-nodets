@@ -57,7 +57,7 @@ module.exports = {
   /**
    * @param {QueryInterface} queryInterface
    */
-  down: queryInterface => {
+  down: (queryInterface) => {
     return queryInterface.dropTable(tableName);
   },
 };

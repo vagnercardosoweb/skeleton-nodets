@@ -23,6 +23,6 @@ export function MulterAutomaticTmpUploads() {
   });
 }
 
-export default function(options: Options = {}) {
+export default function (options: Options = {}) {
   return multer(options);
 }
